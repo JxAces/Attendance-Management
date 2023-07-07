@@ -64,3 +64,13 @@
       </div>
     </div>
   </div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  var infoOption = document.querySelector('.bg-gradient-info');
+  var navbarFixed = document.getElementById('navbarFixed');
+  infoOption.click();
+  navbarFixed.click();
+});
+</script>
+
