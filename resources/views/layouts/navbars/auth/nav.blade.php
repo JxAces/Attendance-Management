@@ -12,7 +12,7 @@
             <!-- <div class="nav-item d-flex align-self-end">
                 <a href="https://www.creative-tim.com/product/soft-ui-dashboard-laravel" target="_blank" class="btn btn-primary active mb-0 text-white" role="button" aria-pressed="true">
                     Download
-                </a> -->
+                </a> 
             </div>
             <div class="ms-md-3 pe-md-3 d-flex align-items-center">
             <div class="input-group">
@@ -20,6 +20,7 @@
                 <input type="text" class="form-control" placeholder="Type here...">
             </div>
             </div>
+            -->
             <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
                 <a href="{{ url('/logout')}}" class="nav-link text-body font-weight-bold px-0">
@@ -27,6 +28,7 @@
                     <span class="d-sm-inline d-none">Sign Out</span>
                 </a>
             </li>
+            <!--
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                 <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                 <div class="sidenav-toggler-inner">
@@ -114,6 +116,7 @@
                 </li>
                 </ul>
             </li>
+                -->
             </ul>
         </div>
     </div>
