@@ -2,7 +2,7 @@
 
 @section('content')
 
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
       <div class="card">
         <div class="card-body p-3">
@@ -269,8 +269,8 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="row my-4">
+  </div> -->
+  <!-- <div class="row my-4">
     <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
       <div class="card">
         <div class="card-header pb-0">
@@ -614,7 +614,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 @endsection
 @push('dashboard')
