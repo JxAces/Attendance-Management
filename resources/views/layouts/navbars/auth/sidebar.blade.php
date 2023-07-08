@@ -4,7 +4,7 @@
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
     <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="{{ route('dashboard') }}">
         <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
-        <span class="ms-3 font-weight-bold">Soft UI Dashboard Laravel</span>
+        <span class="ms-3 font-weight-bold">Example Project Name </span>
     </a>
   </div>
   <hr class="horizontal dark mt-0">
@@ -62,7 +62,7 @@
             <span class="nav-link-text ms-1">User Management</span>
         </a>
       </li>
-      <li class="nav-item mt-2">
+      <!-- <li class="nav-item mt-2">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Example pages</h6>
       </li>
       <li class="nav-item">
@@ -146,7 +146,7 @@
           </div>
           <span class="nav-link-text ms-1">RTL</span>
         </a>
-      </li>
+      </li> -->
       <li class="nav-item mt-3">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
       </li>
@@ -213,13 +213,13 @@
           <span class="nav-link-text ms-1">Sign Up</span>
         </a>
       </li>
-      <li class="nav-link mb-0">
+      <!-- <li class="nav-link mb-0">
         <a href="https://www.creative-tim.com/product/soft-ui-dashboard-pro-laravel" class="btn btn-primary btn-md active px-5 text-white" target="_blank" role="button" aria-pressed="true">
             Upgrade to PRO</a>
-      </li>
+      </li> -->
     </ul>
   </div>
-  <div class="sidenav-footer mx-3 ">
+  <!-- <div class="sidenav-footer mx-3 ">
     <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
       <div class="full-background" style="background-image: url('../assets/img/curved-images/white-curved.jpeg')"></div>
       <div class="card-body text-start p-3 w-100">
@@ -233,5 +233,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </aside>
