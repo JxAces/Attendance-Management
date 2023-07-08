@@ -6,6 +6,8 @@ use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\ImportStudentController;
+use App\Http\Controllers\EventsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -86,3 +88,25 @@ Route::group(['middleware' => 'guest'], function () {
 Route::get('/login', function () {
     return view('session/login-session');
 })->name('login');
+
+Route::get('/import-students', [ImportStudentController::class, 'index'])->name('import-students.index');
+Route::post('import-students-file', [ImportStudentController::class, 'import'])->name('import.students.file');
+
+Route::resource('events', EventsController::class);
+
+/** 
+// Route for displaying all events
+Route::get('/events', [EventsController::class, 'index'])->name('events.index');
+// Route for displaying a specific event
+Route::get('/events/{event}', [EventsController::class, 'show'])->name('events.show');
+// Route for displaying the form to create a new event
+Route::get('/events/create', [EventsController::class, 'create'])->name('events.create');
+// Route for storing a new event
+Route::post('/events', [EventsController::class, 'store'])->name('events.store');
+// Route for displaying the form to edit an existing event
+Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('events.edit');
+// Route for updating an existing event
+Route::put('/events/{event}', [EventsController::class, 'update'])->name('events.update');
+// Route for deleting an existing event
+Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('events.destroy');
+**/
