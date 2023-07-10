@@ -33,9 +33,9 @@ class StudentsImport implements ToModel, WithHeadingRow
         unset($row['updated_at']);
 
         // Check if the remaining row is empty
-        if (empty(array_filter($row))) {
-            return null;
-        }
+        //if (empty(array_filter($row))) {
+          //  return null;
+        //}
 
 
         $deptID = Auth::user()->id;
