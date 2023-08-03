@@ -11,5 +11,8 @@ class Day extends Model
 
     protected $fillable = [
         'event_id',
+        
     ];
+    public $timestamps = false;
+
 }
