@@ -94,7 +94,7 @@ Route::post('import-students-file', [ImportStudentController::class, 'import'])-
 
 Route::resource('events', EventsController::class);
 
-/** 
+
 // Route for displaying all events
 Route::get('/events', [EventsController::class, 'index'])->name('events.index');
 // Route for displaying a specific event
@@ -109,4 +109,3 @@ Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('eve
 Route::put('/events/{event}', [EventsController::class, 'update'])->name('events.update');
 // Route for deleting an existing event
 Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('events.destroy');
-**/

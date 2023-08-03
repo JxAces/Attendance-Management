@@ -101,7 +101,7 @@
                 <div class="modal-content">
                     <!-- Modal header -->
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventDaysModalLabel">{{ $event->name }}</h5>
+                        <h5 class="modal-title" id="eventDaysModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
