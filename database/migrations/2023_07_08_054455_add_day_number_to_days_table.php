@@ -12,11 +12,12 @@ class AddDayNumberToDaysTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::table('days', function (Blueprint $table) {
-            $table->integer('day_number'); // Add the new 'day_number' column
-        });
-    }
+{
+    Schema::table('days', function (Blueprint $table) {
+        $table->integer('day_number')->unsigned(); // You can use the data type that suits your requirements
+    });
+}
+
 
     /**
      * Reverse the migrations.

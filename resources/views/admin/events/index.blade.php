@@ -40,17 +40,20 @@
                                         <td>{{ $event->name }}</td>
                                         <td class="text-center">{{ $event->days }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('events.show', $event->id) }}" class="btn btn-info btn-sm">View</a>
-                                            <a href="{{ route('events.edit', $event->id) }}" class="btn btn-success btn-sm">Edit</a>
-                                            <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display: inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
+                                            @if (auth()->check() && auth()->user()->admin)
+                                                <a href="{{ route('events.show', $event->id) }}" class="btn btn-info btn-sm">View</a>
+                                                <a href="{{ route('events.edit', $event->id) }}" class="btn btn-success btn-sm">Edit</a>
+                                                <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </form>
+                                            @endif
                                         </td>
-                                    </tr>
+                                    </tr    >
                                 @endforeach
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -101,7 +104,7 @@
                 <div class="modal-content">
                     <!-- Modal header -->
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventDaysModalLabel">{{ $event->name }}</h5>
+                        <h5 class="modal-title" id="eventDaysModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
