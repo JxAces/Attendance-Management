@@ -11,7 +11,7 @@ use App\Http\Controllers\EventsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\StudentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,10 +39,6 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('profile');
 	})->name('profile');
 
-	Route::get('rtl', function () {
-		return view('rtl');
-	})->name('rtl');
-
 	Route::get('user-management', function () {
 		return view('laravel-examples/user-management');
 	})->name('user-management');
@@ -51,9 +47,6 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('tables');
 	})->name('tables');
 
-    Route::get('virtual-reality', function () {
-		return view('virtual-reality');
-	})->name('virtual-reality');
 
     Route::get('static-sign-in', function () {
 		return view('static-sign-in');
@@ -93,6 +86,7 @@ Route::get('/import-students', [ImportStudentController::class, 'index'])->name(
 Route::post('import-students-file', [ImportStudentController::class, 'import'])->name('import.students.file');
 
 Route::resource('events', EventsController::class);
+Route::get('/search/students', [StudentController::class, 'search']);
 
 /** 
 // Route for displaying all events
