@@ -11,7 +11,9 @@
                         <div>
                             <h5 class="mb-0">All Events</h5>
                         </div>
+                        @if(auth()->check() && auth()->user()->admin)
                         <a href="#" class="btn bg-gradient-info btn-sm mb-0" id="newEventButton" type="button">+&nbsp; New Events</a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -48,9 +50,11 @@
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </form>
-                                            @endif
+                                            @else
+                                                <a href="{{ url('dashboard') }}" class="btn btn-success btn-sm">Get Attendance</a>
+                                                @endif
                                         </td>
-                                    </tr    >
+                                    </tr>
                                 @endforeach
                             </tbody>
 
