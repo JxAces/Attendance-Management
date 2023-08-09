@@ -92,7 +92,7 @@ Route::get('/login', function () {
 Route::get('/import-students', [ImportStudentController::class, 'index'])->name('import-students.index');
 Route::post('import-students-file', [ImportStudentController::class, 'import'])->name('import.students.file');
 
-Route::resource('events', EventsController::class);
+Route::resource('students', StudentController::class);
 
 /** 
 // Route for displaying all events
