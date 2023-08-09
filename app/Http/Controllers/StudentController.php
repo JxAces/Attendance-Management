@@ -12,7 +12,9 @@ class StudentController extends Controller
 
         // Perform the database query to find matching students
         // For example, search by full_name column
-        $results = Student::where('full_name', 'like', '%'.$query.'%')->get();
+        $results = Student::where('full_name', 'like', '%'.$query.'%')
+                      ->orWhere('id_no', 'like', '%'.$query.'%')
+                      ->get();
 
         // Return the search results as JSON response
         return response()->json($results);
