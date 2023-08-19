@@ -1,7 +1,7 @@
 @extends('layouts.user_type.auth')
 
 @section('content')
-
+ 
 <div>
     <div class="row">
         <div class="col-12">
@@ -38,7 +38,7 @@
                             <tbody>
                                 @foreach ($events as $event)
                                     <tr>
-                                        <td>{{ $event->id }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $event->name }}</td>
                                         <td class="text-center">{{ $event->days }}</td>
                                         <td class="text-center">
