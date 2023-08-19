@@ -11,8 +11,19 @@ class Day extends Model
 
     protected $fillable = [
         'event_id',
-        
+        // Add other fillable attributes as needed
     ];
+    
     public $timestamps = false;
 
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
+    
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }   
 }
+

@@ -22,4 +22,10 @@ class Student extends Model
         'gpa',
         'total_units',
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+    
 }

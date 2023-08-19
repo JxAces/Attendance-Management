@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
+
+use App\Http\Controllers\AttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,7 +28,7 @@ use App\Http\Controllers\StudentController;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/', [HomeController::class, 'home']);
+    // Route::get('/', [HomeController::class, 'home']);
 	Route::get('dashboard', function () {
 		return view('dashboard');
 	})->name('dashboard');
@@ -62,6 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/login', function () {
 		return view('dashboard');
 	})->name('sign-up');
+
+	Route::get('/', [StudentController::class, 'showSearchPage'])->name('student.search');
+	Route::get('/search', [StudentController::class, 'search'])->name('student.search.submit');	
+	Route::get('/student/{id_no}', [StudentController::class, 'getStudentDetails']);
 });
 
 
@@ -85,22 +91,18 @@ Route::get('/login', function () {
 Route::get('/import-students', [ImportStudentController::class, 'index'])->name('import-students.index');
 Route::post('import-students-file', [ImportStudentController::class, 'import'])->name('import.students.file');
 
-Route::resource('events', EventsController::class);
-Route::get('/search/students', [StudentController::class, 'search']);
+Route::get('events', [EventsController::class, 'index'])->name('events.index');
+Route::get('events/create', [EventsController::class, 'create'])->name('events.create');
+Route::post('events', [EventsController::class, 'store'])->name('events.store');
+Route::get('events/{event}', [EventsController::class, 'show'])->name('events.show');
+Route::get('events/{event}/edit', [EventsController::class, 'edit'])->name('events.edit');
+Route::put('events/{event}', [EventsController::class, 'update'])->name('events.update');
+Route::delete('events/{event}', [EventsController::class, 'destroy'])->name('events.destroy');
 
-/** 
-// Route for displaying all events
-Route::get('/events', [EventsController::class, 'index'])->name('events.index');
-// Route for displaying a specific event
-Route::get('/events/{event}', [EventsController::class, 'show'])->name('events.show');
-// Route for displaying the form to create a new event
-Route::get('/events/create', [EventsController::class, 'create'])->name('events.create');
-// Route for storing a new event
-Route::post('/events', [EventsController::class, 'store'])->name('events.store');
-// Route for displaying the form to edit an existing event
-Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('events.edit');
-// Route for updating an existing event
-Route::put('/events/{event}', [EventsController::class, 'update'])->name('events.update');
-// Route for deleting an existing event
-Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('events.destroy');
-**/
+Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+Route::get('/attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
+Route::get('/attendances/export-data', [AttendanceController::class, 'exportData'])->name('attendances.export-data');
+Route::post('/attendances/update', [AttendanceController::class, 'update'])->name('attendances.update');
+
+
+Route::get('/search/students', [StudentController::class, 'search']);
