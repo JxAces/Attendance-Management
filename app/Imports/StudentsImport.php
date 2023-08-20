@@ -2,6 +2,9 @@
 
 namespace App\Imports;
 use App\Models\Student;
+use App\Models\Day;
+use App\Models\Event;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -60,20 +63,58 @@ class StudentsImport implements ToModel, WithHeadingRow
         $gpa = isset($row['gpa']) ? $row['gpa'] : null;
         $totalUnits = isset($row['total_units']) ? $row['total_units'] : null;
 
-        return new Student([
-            'id_no' => $idNo,
-            'dept_no' => $deptID,
-            'full_name' => $fullName,
-            'year_level' => $yearLevel,
-            'major' => $major,
-            'department_program' => $departmentProgram,
-            'gender' => $gender,
-            'registration_date' => $registrationDate,
-            'scholarship_status' => $scholarshipStatus,
-            'address' => $address,
-            'gpa' => $gpa,
-            'total_units' => $totalUnits,
-        ]);
+        $student = Student::where('id_no', $idNo)->where('dept_no', $deptID)->first();
+
+        if($student != null){
+            $student->year_level = $yearLevel;
+            $student->major = $major;
+            $student->department_program = $departmentProgram;
+            $student->gender = $gender;
+            $student->registration_date = $registrationDate;
+            $student->scholarship_status = $scholarshipStatus;
+            $student->address = $address;
+            $student->gpa = $gpa;
+            $student->total_units = $totalUnits;
+            $student->save();
+        } else {
+            $newStudent = new Student([
+                'id_no' => $idNo,
+                'dept_no' => $deptID,
+                'full_name' => $fullName,
+                'year_level' => $yearLevel,
+                'major' => $major,
+                'department_program' => $departmentProgram,
+                'gender' => $gender,
+                'registration_date' => $registrationDate,
+                'scholarship_status' => $scholarshipStatus,
+                'address' => $address,
+                'gpa' => $gpa,
+                'total_units' => $totalUnits,
+            ]);
+
+            $newStudent->save();    
+
+            $events = Event::get();
+            if($events != null){
+                foreach($events as $event){
+                    $days = Day::where('event_id', $event->id)->get();
+                    if($days != null){
+                        // Create attendance records for each student and day combination
+                        foreach ($days as $day) {
+                            Attendance::create([
+                                'day_id' => $day->id,
+                                'student_id' => $newStudent->id,
+                                'm_in' => false,
+                                'm_out' => false,
+                                'af_in' => false,
+                                'af_out' => false,
+                            ]);
+                        }
+                    }
+                }
+            }
+            return;
+        }
     }
 
     public function rules(): array
