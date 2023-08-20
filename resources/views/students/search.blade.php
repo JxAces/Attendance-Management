@@ -14,18 +14,17 @@
         <select id="studentSelect" class="form-control"></select>
     </div>
 </div>
-
+@if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 <div class="container mt-4">
     <h2 class="h4">Student Details</h2>
     <div id="studentDetails">
         <!-- Student details will be displayed here -->
     </div>
     <video id="qr-scanner"></video>
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
 
 
     <form action="/update-attendance" method="POST">
@@ -123,26 +122,18 @@
                             <p class="h6">ID: ${data.id_no}</p>
                             <p class="h6">Year Level: ${data.year_level}</p>
                             <p class="h6">Major: ${data.major}</p>
-                        `);
+                        `);  
                         
-                        const selectedValue = studentSelect[0].selectize.getValue();
                         const eventDetails = $('#eventDetails').text();
-            
-                        if (selectedValue && eventDetails !== "No Event") {
+                        if (eventDetails !== "No Event"){
                             const eventParts = eventDetails.split(" || ");
                             const eventName = eventParts[0].split(": ")[1];
                             const dayNumber = eventParts[1].split(": ")[1];
-            
-                            // Update hidden input fields
-                            $('input[name="student_id"]').val(selectedValue);
                             $('input[name="event_name"]').val(eventName);
                             $('input[name="day_number"]').val(dayNumber);
                             $('input[name="sign_time"]').val(getCurrentTimeFormatted());
-            
-                            // Continue with form submission
+                             $('input[name="student_id"]').val(studentId);
                         }
-
-                        // Submit the form
                         $('form').submit();
                     } else {
                         $('#studentDetails').html('<p class="h6">Student details not found.</p>');
@@ -220,6 +211,8 @@
             const signOutAfternoon = eventDay.sign_out_afternoon || '00:00:00';
             const eventDate = eventDay.date ? eventDay.date.substr(0, 10) : null;
             console.log('For Loop Events');
+            console.log(eventDate);
+            console.log(currentDateString);
 
             if (eventDate === currentDateString) {
                 console.log('We have Event');
