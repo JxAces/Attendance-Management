@@ -12,7 +12,7 @@ class UpdateDaysTableTimeColumns extends Migration
             $table->time('sign_in_morning')->nullable()->change();
             $table->time('sign_out_morning')->nullable()->change();
             $table->time('sign_in_afternoon')->nullable()->change();
-            $table->time('sign_out_afternon')->nullable()->change();
+            $table->time('sign_out_afternoon')->nullable()->change();
         });
     }
 
@@ -23,7 +23,7 @@ class UpdateDaysTableTimeColumns extends Migration
             $table->timestamp('sign_in_morning')->nullable()->change();
             $table->timestamp('sign_out_morning')->nullable()->change();
             $table->timestamp('sign_in_afternoon')->nullable()->change();
-            $table->timestamp('sign_out_afternon')->nullable()->change();
+            $table->timestamp('sign_out_afternoon')->nullable()->change();
         });
     }
 }

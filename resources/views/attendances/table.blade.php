@@ -6,10 +6,10 @@
         <td>{{ $attendance->student->year_level }}</td>
         <td>{{ $attendance->day->event->name }}</td>
         <td>{{ $attendance->day->day_number }}</td>
-        <td>{{ $attendance->m_in ? 'Present' : 'Absent' }}</td>
-        <td>{{ $attendance->m_out ? 'Present' : 'Absent' }}</td>
-        <td>{{ $attendance->af_in ? 'Present' : 'Absent' }}</td>
-        <td>{{ $attendance->af_out ? 'Present' : 'Absent' }}</td>
+        <td>{{ $attendance->m_in->name}}</td>
+        <td>{{ $attendance->m_out->name}}</td>
+        <td>{{ $attendance->af_in->name}}</td>
+        <td>{{ $attendance->af_out->name}}</td>
         <!-- Display other attendance data here -->
     </tr>
 @endforeach
