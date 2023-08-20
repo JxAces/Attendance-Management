@@ -1,5 +1,5 @@
 Required to install:
-
+Don't worry if macbook ni, same ra proceedures sa windows
 https://getcomposer.org/download/
 <img width="1280" alt="Screen Shot 2023-08-20 at 6 57 44 PM" src="https://github.com/JxAces/Attendance-Management/assets/125654465/d143f5c1-4d7d-4e78-ad8b-917502b11399">
 
@@ -22,6 +22,10 @@ IMPORTANT NOTE: e update ang PHP if possible
 To start, in your bash type all the command (gamit mo ug git-bash) which is this: https://git-scm.com/downloads
 
 sa git-bash ramo mag buhat ani tanan
+
+
+
+
 
 git clone https://github.com/JxAces/Attendance-Management.git
 
