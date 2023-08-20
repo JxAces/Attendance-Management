@@ -20,6 +20,7 @@
     <div id="studentDetails">
         <!-- Student details will be displayed here -->
     </div>
+    <video id="qr-scanner"></video>
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -91,6 +92,70 @@
                 });
             },
         });
+
+        let scanner = new Instascan.Scanner({ video: document.getElementById('qr-scanner') });
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        scanner.addListener('scan', function (content) {
+            studentSelect[0].selectize.setValue(content);
+            studentSelect[0].selectize.search(content);
+            // Assuming the QR code content is the student's ID
+            handleAttendance(content);
+        });
+
+        function handleAttendance(studentId) {
+            // Fetch student details and attendance information using the scanned student ID
+            $.ajax({
+                url: '/student/' + studentId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data) { // Ensure data is not null or undefined
+                        $('#studentDetails').html(`
+                            <h3 class="h5">${data.full_name}</h3>
+                            <p class="h6">ID: ${data.id_no}</p>
+                            <p class="h6">Year Level: ${data.year_level}</p>
+                            <p class="h6">Major: ${data.major}</p>
+                        `);
+                        
+                        const selectedValue = studentSelect[0].selectize.getValue();
+                        const eventDetails = $('#eventDetails').text();
+            
+                        if (selectedValue && eventDetails !== "No Event") {
+                            const eventParts = eventDetails.split(" || ");
+                            const eventName = eventParts[0].split(": ")[1];
+                            const dayNumber = eventParts[1].split(": ")[1];
+            
+                            // Update hidden input fields
+                            $('input[name="student_id"]').val(selectedValue);
+                            $('input[name="event_name"]').val(eventName);
+                            $('input[name="day_number"]').val(dayNumber);
+                            $('input[name="sign_time"]').val(getCurrentTimeFormatted());
+            
+                            // Continue with form submission
+                        }
+
+                        // Submit the form
+                        $('form').submit();
+                    } else {
+                        $('#studentDetails').html('<p class="h6">Student details not found.</p>');
+                        $('#signInButton').prop('disabled', true);
+                    }
+                },
+                error: function () {
+                    $('#studentDetails').html('<p class="h6">Student details not found.</p>');
+                    $('#signInButton').prop('disabled', true);
+                },
+            });
+        }
+
 
         function updateClock() {
             const now = new Date();
