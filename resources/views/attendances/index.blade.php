@@ -100,13 +100,11 @@
         function exportData() {
             var eventId = $('#event_id').val();
             var dayNumber = $('#day_number').val();
-            var yearLevel = $('#year_level').val();
             var searchValue = $('#search').val();
 
             var exportUrl = '{{ route('attendances.export-data') }}' +
                             '?event_id=' + eventId +
                             '&day_number=' + dayNumber +
-                            '&year_level=' + yearLevel +
                             '&search=' + searchValue;
 
             window.location.href = exportUrl;

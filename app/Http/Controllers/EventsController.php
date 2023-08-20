@@ -190,7 +190,15 @@ class EventsController extends Controller
     protected function updateAttendanceShift($day, $shiftField, $timeField)
     {
         if ($day->$timeField !== null) {
-            Attendance::where('day_id', $day->id)->update([$shiftField => 5]);
+            $attendances = Attendance::where('day_id', $day->id)->get(); 
+            foreach($attendances as $attendance)
+            {
+                if($attendance->$shiftField->value != 1)
+                {
+                  $attendance->$shiftField = 5;
+                  $attendance->save();
+                }
+            }
         } else {
             Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
         }

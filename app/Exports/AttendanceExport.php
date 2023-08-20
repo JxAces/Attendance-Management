@@ -62,10 +62,10 @@ class AttendanceExport implements FromCollection, WithHeadings
                 $attendance->student->year_level,           // Year
                 $attendance->day->event->name,        // Event
                 $attendance->day->day_number,         // Day
-                $attendance->m_in == 1 ? 'Present' : 'Absent',   // Sign In Morning
-                $attendance->m_out == 1 ? 'Present' : 'Absent',  // Sign Out Morning
-                $attendance->af_in == 1 ? 'Present' : 'Absent',  // Sign In Afternoon
-                $attendance->af_out == 1 ? 'Present' : 'Absent', // Sign Out Afternoon
+                $attendance->m_in->name,   // Sign In Morning
+                $attendance->m_out->name,  // Sign Out Morning
+                $attendance->af_in->name,  // Sign In Afternoon
+                $attendance->af_out->name, // Sign Out Afternoon
                 // Add more data fields as needed
             ];
         }

@@ -9,7 +9,7 @@ use App\Models\Event;
 use App\Models\Day;
 use App\Models\Student;
 use Maatwebsite\Excel\Facades\Excel;
-use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
@@ -111,23 +111,23 @@ class AttendanceController extends Controller
        
         $attendance = Attendance::where('day_id', $day->id)->where('student_id', $student->id)->first();
 
-        $signInMorning = Carbon::parse($day->sign_in_morning);
-        $endsignInMorning = $signInMorning->addHour();
-        $signOutMorning = Carbon::parse($day->sign_out_morning);
-        $endsignOutMorning = $signOutMorning->addHour();
-        $signInAfternoon = Carbon::parse($day->sign_in_afternoon);
-        $endsignInAfternoon = $signInAfternoon->addHour();
-        $signOutAfternoon = Carbon::parse($day->sign_out_afternoon);
-        $endsignOutAfternoon  = $signOutAfternoon->addHour();
-        $signTime = Carbon::parse($requestData['sign_time']);
+        $signInMorning = new DateTime($day->sign_in_morning);
+        $endsignInMorning = (clone $signInMorning)->modify('+1 hour');
+        $signOutMorning = new DateTime($day->sign_out_morning);
+        $endsignOutMorning = (clone $signOutMorning)->modify('+1 hour');
+        $signInAfternoon = new DateTime($day->sign_in_afternoon);
+        $endsignInAfternoon = (clone $signInAfternoon)->modify('+1 hour');
+        $signOutAfternoon = new DateTime($day->sign_out_afternoon);
+        $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour');
+        $signTime = new DateTime($requestData['sign_time']);
         
-        if($signTime > $signInMorning && $signTime < $endsignInMorning){
+        if ($signTime > $signInMorning && $signTime < $endsignInMorning) {
             $attendance->m_in = 1;
-        } else if($signTime > $day->signOutMorning && $signTime < $endsignOutMorning){
+        } else if ($signTime > $signOutMorning && $signTime < $endsignOutMorning) {
             $attendance->m_out = 1;
-        } else if($signTime > $day->signInAfternoon && $signTime < $endsignInAfternoon){
+        } else if ($signTime > $signInAfternoon && $signTime < $endsignInAfternoon) {
             $attendance->af_in = 1;
-        } else if($signTime > $day->signOutAfternoon && $signTime < $endsignOutAfternoon){
+        } else if ($signTime > $signOutAfternoon && $signTime < $endsignOutAfternoon) {
             $attendance->af_out = 1;
         }
 
