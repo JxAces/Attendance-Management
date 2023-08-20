@@ -28,6 +28,10 @@
                 <label for="search" class="form-label">Search</label>
                 <input type="text" name="search" class="form-control" id="search" value="{{ request('search') }}">
             </div>
+            <div class="col-md-6 mb-3">
+                <label for="year_level" class="form-label">Year Level</label>
+                <input type="number" name="year_level" class="form-control" id="year_level" value="{{ request('year_level') }}">
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -96,11 +100,13 @@
         function exportData() {
             var eventId = $('#event_id').val();
             var dayNumber = $('#day_number').val();
+            var yearLevel = $('#year_level').val();
             var searchValue = $('#search').val();
 
             var exportUrl = '{{ route('attendances.export-data') }}' +
                             '?event_id=' + eventId +
                             '&day_number=' + dayNumber +
+                            '&year_level=' + yearLevel +
                             '&search=' + searchValue;
 
             window.location.href = exportUrl;

@@ -121,36 +121,81 @@ class EventsController extends Controller
             'name' => 'required',
             // Add more validation rules for your event fields
         ]);
-
+    
         $event->name = $request->name;
         // Update other event properties as needed
         $event->save();
-
-        // Update the days associated with the event
-        foreach ($request->days as $dayId => $dayData) {
-            $day = Day::findOrFail($dayId);
-
-            // Convert time input to valid datetime format using Carbon
-            if (isset($dayData['sign_in_morning'])) {
-                $day->sign_in_morning = Carbon::parse($dayData['sign_in_morning'])->format('Y-m-d H:i:s');
+    
+        if (is_null($request->days)) {
+            // Get all days associated with the event
+            $days = Day::where('event_id', $event->id)->get();
+    
+            foreach ($days as $day) {
+                foreach (['sign_in_morning', 'sign_out_morning', 'sign_in_afternoon', 'sign_out_afternoon', 'date'] as $field) {
+                    $day->$field = null;
+                    $day->save();
+                    $this->updateAttendanceShift($day, 'm_in', 'sign_in_morning');
+                    $this->updateAttendanceShift($day, 'm_out', 'sign_out_morning');
+                    $this->updateAttendanceShift($day, 'af_in', 'sign_in_afternoon');
+                    $this->updateAttendanceShift($day, 'af_out', 'sign_out_afternoon');
+                }
             }
-            if (isset($dayData['sign_out_morning'])) {
-                $day->sign_out_morning = Carbon::parse($dayData['sign_out_morning'])->format('Y-m-d H:i:s');
+        } else {
+            // Update the days associated with the event
+            foreach ($request->days as $dayId => $dayData) {
+                $day = Day::findOrFail($dayId);
+                
+                foreach (['date', 'sign_in_morning', 'sign_out_morning', 'sign_in_afternoon', 'sign_out_afternoon'] as $field) {
+                    if (isset($dayData[$field])) {
+                        if ($field === 'date') {
+                            $dateValue = trim($dayData[$field]); // Trim whitespace
+                            // Validate the date format using Carbon
+                            if (Carbon::createFromFormat('Y-m-d', $dateValue)) {
+                                $day->$field = $dateValue;
+                            } else {
+                                // Handle invalid date format here
+                                // For example, set an error message or log the issue
+                            }
+                        } elseif (!is_null($dayData[$field])) {
+                            $timeValue = trim($dayData[$field]); // Trim whitespace
+                
+                            // Validate the time format using regular expression
+                            if (preg_match('/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/', $timeValue)) {
+                                $value = Carbon::createFromFormat('H:i', $timeValue)->format('H:i:s');
+                                $day->$field = $value;
+                            } else {
+                                // Handle invalid time format here
+                                // For example, set an error message or log the issue
+                            }
+                        } else {
+                            $day->$field = null;
+                        }
+                    }
+                }
+        
+                $day->save();
+        
+                // Update attendance records for each shift individually
+                $this->updateAttendanceShift($day, 'm_in', 'sign_in_morning');
+                $this->updateAttendanceShift($day, 'm_out', 'sign_out_morning');
+                $this->updateAttendanceShift($day, 'af_in', 'sign_in_afternoon');
+                $this->updateAttendanceShift($day, 'af_out', 'sign_out_afternoon');
             }
-            if (isset($dayData['sign_in_afternoon'])) {
-                $day->sign_in_afternoon = Carbon::parse($dayData['sign_in_afternoon'])->format('Y-m-d H:i:s');
-            }
-            if (isset($dayData['sign_out_afternoon'])) {
-                $day->sign_out_afternoon = Carbon::parse($dayData['sign_out_afternoon'])->format('Y-m-d H:i:s');
-            }
-
-            $day->save();
         }
-
+    
         // Redirect to the index or show page after successful update
         return redirect()->route('events.index')->with('success', 'Event and days updated successfully');
-    }
-
+    }    
+    
+    protected function updateAttendanceShift($day, $shiftField, $timeField)
+    {
+        if ($day->$timeField !== null) {
+            Attendance::where('day_id', $day->id)->update([$shiftField => 5]);
+        } else {
+            Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
+        }
+    }    
+    
     /**
      * Remove the specified resource from storage.
      */

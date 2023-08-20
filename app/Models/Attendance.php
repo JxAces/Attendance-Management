@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enum\AttendanceLevel;
 
 class Attendance extends Model
 {
@@ -14,6 +15,14 @@ class Attendance extends Model
         'af_in',
         'af_out',
     ];
+
+    protected $casts = [
+        'm_in' => AttendanceLevel::class,
+        'm_out' => AttendanceLevel::class,
+        'af_in' => AttendanceLevel::class,
+        'af_out' => AttendanceLevel::class,
+    ];
+
 
     public function day()
     {

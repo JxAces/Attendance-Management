@@ -43,7 +43,6 @@
                                         <td class="text-center">{{ $event->days }}</td>
                                         <td class="text-center">
                                             @if (auth()->check() && auth()->user()->admin)
-                                                <a href="{{ route('events.show', $event->id) }}" class="btn btn-info btn-sm">View</a>
                                                 <a href="{{ route('events.edit', $event->id) }}" class="btn btn-success btn-sm">Edit</a>
                                                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display: inline-block;">
                                                     @csrf

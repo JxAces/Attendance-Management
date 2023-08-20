@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student; 
+use App\Models\Day; 
+use App\Models\Event; 
 
 class StudentController extends Controller
 {
@@ -22,7 +24,9 @@ class StudentController extends Controller
 
     public function showSearchPage()
     {
-        return view('students.search');
+        $days = Day::all();
+        $events = Event::all();
+        return view('students.search', compact('days','events'));
     }
 
     public function search(Request $request)

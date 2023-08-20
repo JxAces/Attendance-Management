@@ -29,7 +29,8 @@ return new class extends Migration
             $table->timestamp('sign_in_morning')->nullable();
             $table->timestamp('sign_out_morning')->nullable();
             $table->timestamp('sign_in_afternoon')->nullable();
-            $table->timestamp('sign_out_afternon')->nullable();
+            $table->timestamp('sign_out_afternoon')->nullable();
+            $table->timestamp('date')->nullable();
             // Add your day table columns here
 
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');

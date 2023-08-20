@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', [StudentController::class, 'showSearchPage'])->name('student.search');
 	Route::get('/search', [StudentController::class, 'search'])->name('student.search.submit');	
 	Route::get('/student/{id_no}', [StudentController::class, 'getStudentDetails']);
+	Route::post('/update-attendance', [AttendanceController::class, 'updateAttendance']);
 });
 
 
