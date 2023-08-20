@@ -14,18 +14,19 @@
         <select id="studentSelect" class="form-control"></select>
     </div>
 </div>
+
 @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    @endif
+@endif
+
 <div class="container mt-4">
     <h2 class="h4">Student Details</h2>
     <div id="studentDetails">
         <!-- Student details will be displayed here -->
     </div>
     <video id="qr-scanner"></video>
-
 
     <form action="/update-attendance" method="POST">
         @csrf
@@ -199,57 +200,59 @@
         const events = {!! json_encode($events) !!};
 
         function checkEventTime() {
-        const currentTime = new Date();
-        const currentHours = currentTime.getHours();
-        const currentMinutes = currentTime.getMinutes();
-        const currentDateString = currentTime.toISOString().substr(0, 10);
+            const options = { timeZone: 'Asia/Manila' };
+            const currentTime = new Date().toLocaleTimeString('en-US', options);
+            const currentHours = new Date().getHours();
+            const currentMinutes = new Date().getMinutes();
+            const currentDate = new Date();
+            currentDate.setHours(currentDate.getHours() + 8); // Adjust for Philippines timezone
 
-        eventDays.forEach(eventDay => {
-            const signInMorning = eventDay.sign_in_morning || '00:00:00';
-            const signOutMorning = eventDay.sign_out_morning || '00:00:00';
-            const signInAfternoon = eventDay.sign_in_afternoon || '00:00:00';
-            const signOutAfternoon = eventDay.sign_out_afternoon || '00:00:00';
-            const eventDate = eventDay.date ? eventDay.date.substr(0, 10) : null;
-            console.log('For Loop Events');
-            console.log(eventDate);
-            console.log(currentDateString);
+            eventDays.forEach(eventDay => {
+                const signInMorning = eventDay.sign_in_morning || '00:00:00';
+                const signOutMorning = eventDay.sign_out_morning || '00:00:00';
+                const signInAfternoon = eventDay.sign_in_afternoon || '00:00:00';
+                const signOutAfternoon = eventDay.sign_out_afternoon || '00:00:00';
+                const eventDate = eventDay.date ? eventDay.date.substr(0, 10) : null;
 
-            if (eventDate === currentDateString) {
-                console.log('We have Event');
-                const dayNumber = eventDay.day_number;
-                const eventName = events.find(event => event.id === eventDay.event_id).name;
-                let eventDetails = `Event: ${eventName} || Day: ${dayNumber} || `;
+                const localEventDate = new Date(eventDate);
+                localEventDate.setHours(localEventDate.getHours() + 8); // Adjust for Philippines timezone
 
-                let isSignIn = false;
-                let isSignOut = false;
+                if (localEventDate.toISOString().substr(0, 10) === currentDate.toISOString().substr(0, 10)) {
+                    const dayNumber = eventDay.day_number;
+                    const eventName = events.find(event => event.id === eventDay.event_id).name;
+                    let eventDetails = `Event: ${eventName} || Day: ${dayNumber} || `;
 
-                if (isWithinHourAfter(currentHours, currentMinutes, signInMorning)) {
-                    eventDetails += "Morning Sign In";
-                    isSignIn = true;
-                    isSignOut = false;
-                } else if (isWithinHourAfter(currentHours, currentMinutes, signOutMorning)) {
-                    eventDetails += "Morning Sign Out";
-                    isSignIn = false;
-                    isSignOut = true;
-                } else if (isWithinHourAfter(currentHours, currentMinutes, signInAfternoon)) {
-                    eventDetails += "Afternoon Sign In";
-                    isSignIn = true;
-                    isSignOut = false;
-                } else if (isWithinHourAfter(currentHours, currentMinutes, signOutAfternoon)) {
-                    eventDetails += "Afternoon Sign Out";
-                    isSignIn = false;
-                    isSignOut = true;
-                } else {
-                    eventDetails += "No Event";
-                    isSignIn = false;
-                    isSignOut = false;
+                    let isSignIn = false;
+                    let isSignOut = false;
+
+                    if (isWithinHourAfter(currentHours, currentMinutes, signInMorning)) {
+                        eventDetails += "Morning Sign In";
+                        isSignIn = true;
+                        isSignOut = false;
+                    } else if (isWithinHourAfter(currentHours, currentMinutes, signOutMorning)) {
+                        eventDetails += "Morning Sign Out";
+                        isSignIn = false;
+                        isSignOut = true;
+                    } else if (isWithinHourAfter(currentHours, currentMinutes, signInAfternoon)) {
+                        eventDetails += "Afternoon Sign In";
+                        isSignIn = true;
+                        isSignOut = false;
+                    } else if (isWithinHourAfter(currentHours, currentMinutes, signOutAfternoon)) {
+                        eventDetails += "Afternoon Sign Out";
+                        isSignIn = false;
+                        isSignOut = true;
+                    } else {
+                        eventDetails += "No Event";
+                        isSignIn = false;
+                        isSignOut = false;
+                    }
+
+                    $('#eventDetails').text(eventDetails);
+                    updateButtonLabel();
                 }
+            });
 
-                $('#eventDetails').text(eventDetails);
-                updateButtonLabel();
             }
-        });
-}
 
 
         function isWithinHourAfter(hours, minutes, timeString) {
