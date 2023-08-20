@@ -24,7 +24,7 @@
     <div id="studentDetails">
         <!-- Student details will be displayed here -->
     </div>
-    <video id="qr-scanner"></video>
+    <video id="qr-scanner" style="display: none;"></video>
 
 
     <form action="/update-attendance" method="POST">
