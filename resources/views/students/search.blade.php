@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="container">
-    <!-- Display the clock in smaller font and 12-hour format -->
     <h1 id="clock" class="text-center mt-4 h3"></h1>
-
-    <!-- Display the event details if there's a matching event day -->
     <p id="eventDetails" class="text-center mt-2 h5"></p>
-
+    <div class="text-center">
+        <video id="qr-scanner" style="max-width: 100%; height: auto;"></video>
+    </div>
     <h2 class="mt-4 h4">Search Students by ID</h2>
     <div class="form-group">
         <label for="studentSelect" class="h6">Search and Select Student:</label>
@@ -15,30 +14,26 @@
     </div>
 </div>
 
-@if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-@endif
+<div class="custom-alert-container">
+    @if(session('success'))
+    <div class="custom-alert alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+</div>
 
 <div class="container mt-4">
     <h2 class="h4">Student Details</h2>
-    <div id="studentDetails">
-        <!-- Student details will be displayed here -->
-    </div>
-    <video id="qr-scanner" style="display: none;"></video>
-
+    <div id="studentDetails"></div>
     <form action="/update-attendance" method="POST">
         @csrf
         <input type="text" name="student_id" placeholder="Student ID" required hidden>
         <input type="text" name="event_name" placeholder="Event Name" required hidden>
         <input type="text" name="day_number" placeholder="Day Number" required hidden>
         <input type="text" name="sign_time" placeholder="Sign Time" required hidden>
-        <!-- Add the student sign-in button -->
         <button id="signInButton" type="submit" class="btn btn-primary mt-3" disabled>Sign In Student</button>
     </form>
 </div>
-
 <script>
     $(document).ready(function () {
         const studentSelect = $('#studentSelect').selectize({
@@ -147,6 +142,8 @@
                 },
             });
         }
+
+        window.scrollTo(0, document.body.scrollHeight);
 
 
         function updateClock() {
@@ -290,3 +287,20 @@
     });
 </script>
 @endsection
+<style>
+/* Add custom styles for the alert container and the alert itself */
+.custom-alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.custom-alert {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #2ecc71; /* Green background color */
+    color: #ffffff; /* White text color */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>
