@@ -37,7 +37,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="submitStudentButton">Save Student</button>
             </div>
         </div>
@@ -135,6 +135,9 @@
 
         $('#openModalButton').on('click', function () {
             $('#addStudentModal').modal('show'); // Open the modal
+        });
+        $('#closeModal').on('click', function () {
+            $('#addStudentModal').modal('hide'); // Open the modal
         });
 
         $('#submitStudentButton').on('click', function () {
