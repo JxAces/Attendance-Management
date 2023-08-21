@@ -8,9 +8,39 @@
         <video id="qr-scanner" style="max-width: 100%; height: auto;"></video>
     </div>
     <h2 class="mt-4 h4">Search Students by ID</h2>
-    <div class="form-group">
-        <label for="studentSelect" class="h6">Search and Select Student:</label>
-        <select id="studentSelect" class="form-control"></select>
+    <div class="d-flex align-items-center"> <!-- Added a flex container for alignment -->
+        <div class="form-group flex-grow-1"> <!-- Adjusted the width to grow with the flex container -->
+            <label for="studentSelect" class="h6">Search and Select Student:</label>
+            <select id="studentSelect" class="form-control"></select>
+        </div>
+        <button id="openModalButton" class="btn btn-primary ml-2">New Student</button> <!-- Added the button -->
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" role="dialog" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm" action="{{ route('save_student') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="studentName">Student ID No</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" required>
+                        <input type="text" name="event_name_new" placeholder="Event Name" required hidden>
+                        <input type="text" name="day_number_new" placeholder="Day Number" required hidden>
+                        <input type="text" name="sign_time_new" placeholder="Sign Time" required hidden>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitStudentButton">Save Student</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -21,6 +51,21 @@
     </div>
     @endif
 </div>
+<div class="custom-alert-container">
+    @if(session('warning'))
+    <div class="custom-alert alert alert-warning">
+        {{ session('warning') }}
+    </div>
+    @endif
+</div>
+<div class="custom-alert-container">
+    @if(session('error'))
+    <div class="custom-alert alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+</div>
+
 
 <div class="container mt-4">
     <h2 class="h4">Student Details</h2>
@@ -88,22 +133,39 @@
             },
         });
 
-        let scanner = new Instascan.Scanner({ video: document.getElementById('qr-scanner') });
-        Instascan.Camera.getCameras().then(function (cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
-            } else {
-                console.error('No cameras found.');
-            }
-        }).catch(function (error) {
-            console.error(error);
+        $('#openModalButton').on('click', function () {
+            $('#addStudentModal').modal('show'); // Open the modal
         });
-        scanner.addListener('scan', function (content) {
-            studentSelect[0].selectize.setValue(content);
-            studentSelect[0].selectize.search(content);
-            // Assuming the QR code content is the student's ID
-            handleAttendance(content);
+
+        $('#submitStudentButton').on('click', function () {
+            const eventDetails = $('#eventDetails').text();
+                        if (eventDetails !== "No Event"){
+                            const eventParts = eventDetails.split(" || ");
+                            const eventName = eventParts[0].split(": ")[1];
+                            const dayNumber = eventParts[1].split(": ")[1];
+                            $('input[name="event_name_new"]').val(eventName);
+                            $('input[name="day_number_new"]').val(dayNumber);
+                            $('input[name="sign_time_new"]').val(getCurrentTimeFormatted());
+                }
+            $('#addStudentForm').submit();
         });
+
+            let scanner = new Instascan.Scanner({ video: document.getElementById('qr-scanner') });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            scanner.addListener('scan', function (content) {
+                studentSelect[0].selectize.setValue(content);
+                studentSelect[0].selectize.search(content);
+                // Assuming the QR code content is the student's ID
+                handleAttendance(content);
+            });
 
         function handleAttendance(studentId) {
             // Fetch student details and attendance information using the scanned student ID

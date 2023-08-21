@@ -104,6 +104,6 @@ Route::get('/attendances', [AttendanceController::class, 'index'])->name('attend
 Route::get('/attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
 Route::get('/attendances/export-data', [AttendanceController::class, 'exportData'])->name('attendances.export-data');
 Route::post('/attendances/update', [AttendanceController::class, 'update'])->name('attendances.update');
-
+Route::post('/save-student', [StudentController::class, 'saveStudent'])->name('save_student');
 
 Route::get('/search/students', [StudentController::class, 'search']);

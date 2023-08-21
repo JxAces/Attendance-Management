@@ -121,19 +121,42 @@ class AttendanceController extends Controller
         $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour');
         $signTime = new DateTime($requestData['sign_time']);
         
+        $message = "Already Signed In: " . $student->id_no;
+
         if ($signTime > $signInMorning && $signTime < $endsignInMorning) {
-            $attendance->m_in = 1;
+            if($attendance->m_in->value === 1){
+                return redirect()->route('student.search')->with('warning', $message);  
+            } else {
+                $attendance->m_in = 1;
+            }
         } else if ($signTime > $signOutMorning && $signTime < $endsignOutMorning) {
-            $attendance->m_out = 1;
+            if($attendance->m_out->value === 1){
+                return redirect()->route('student.search')->with('warning', $message);  
+            } else {
+                $attendance->m_out = 1;
+            }
         } else if ($signTime > $signInAfternoon && $signTime < $endsignInAfternoon) {
-            $attendance->af_in = 1;
+            if($attendance->af_in->value === 1){
+                return redirect()->route('student.search')->with('warning', $message);  
+            } else {
+                $attendance->af_in = 1;
+            }
         } else if ($signTime > $signOutAfternoon && $signTime < $endsignOutAfternoon) {
-            $attendance->af_out = 1;
+            if($attendance->af_out->value === 1){
+                return redirect()->route('student.search')->with('warning', $message);  
+            } else {
+                $attendance->af_out = 1;
+            }
+        } else {
+            $message = "No Sign In/Out Scheduled";
+            return redirect()->route('student.search')->with('error', $message);  
         }
 
         $attendance->save();
 
-        return redirect()->route('student.search')->with('success', 'Attendance updated successfully');
+        $message = "ID No: " . $student->id_no;
+
+        return redirect()->route('student.search')->with('success', $message);        
     }
 
 }
