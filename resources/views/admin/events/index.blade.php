@@ -50,7 +50,7 @@
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </form>
                                             @else
-                                                <a href="{{ url('dashboard') }}" class="btn btn-success btn-sm">Get Attendance</a>
+                                                <a href="{{ url('/') }}" class="btn btn-success btn-sm">Get Attendance</a>
                                                 @endif
                                         </td>
                                     </tr>
