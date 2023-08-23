@@ -84,14 +84,40 @@ class StudentController extends Controller
                 if($days != null){
                     // Create attendance records for each student and day combination
                     foreach ($days as $day) {
-                        Attendance::create([
+
+                        $new_m_in = 0;
+                        $new_m_out = 0;
+                        $new_af_in = 0;
+                        $new_af_out = 0;
+
+                        $checkAttendance = Attendance::first();
+                        if($checkAttendance->m_in->value != 0)
+                        {
+                            $new_m_in = 1;
+                        }
+                        if($checkAttendance->m_out->value != 0)
+                        {
+                            $new_m_out = 1;
+                        }
+                        if($checkAttendance->af_in->value != 0)
+                        {
+                            $new_af_in = 1;
+                        }
+                        if($checkAttendance->af_out->value != 0)
+                        {
+                            $new_af_out = 1;
+                        }
+
+                        $newStudent = Attendance::create([
                             'day_id' => $day->id,
                             'student_id' => $student->id,
-                            'm_in' => false,
-                            'm_out' => false,
-                            'af_in' => false,
-                            'af_out' => false,
+                            'm_in' => $new_m_in,
+                            'm_out' => $new_m_out,
+                            'af_in' => $new_af_in,
+                            'af_out' => $new_af_out,
                         ]);
+
+                        dd($newStudent);
                     }
                 }
             }
