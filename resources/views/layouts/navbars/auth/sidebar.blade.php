@@ -96,6 +96,14 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{ (Request::is('attendances') ? 'active' : '') }}" href="{{ url('attendances') }}">
+        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+
+            <i class="fas fa-globe" style="font-size: 18px;"></i>
+            </div>
+          <span class="nav-link-text ms-1">Attendance List</span>
+        </a>
+      <li class="nav-item">
         <a class="nav-link {{ (Request::is('import-students') ? 'active' : '') }}" href="{{ url('import-students') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
           
