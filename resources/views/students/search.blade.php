@@ -202,6 +202,13 @@
                     }
                 },
                 error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid QR Code!',
+                        text: 'Student details not found',
+                        showConfirmButton: false,
+                        timer: 2000 // Adjust the timer as needed
+                        });
                     $('#studentDetails').html('<p class="h6">Student details not found.</p>');
                     $('#signInButton').prop('disabled', true);
                 },
