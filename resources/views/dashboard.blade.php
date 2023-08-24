@@ -45,28 +45,28 @@
         </div>
         <!-- Charts Cards -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
+            <div class="card mt-4">
+                <div class="card-body ">
                     <canvas id="lineChartYearLevel"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mt-4">
                 <div class="card-body">
                     <canvas id="scatterChartIdNo"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mt-4">
                 <div class="card-body">
                     <canvas id="barChartMIn"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mt-4">
                 <div class="card-body">
                     <canvas id="barChartAfOut"></canvas>
                 </div>

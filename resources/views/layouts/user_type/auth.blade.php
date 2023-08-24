@@ -52,7 +52,7 @@
             </main>
         @endif
 
-        @include('components.fixed-plugin')
+        
     @endif
 
     
