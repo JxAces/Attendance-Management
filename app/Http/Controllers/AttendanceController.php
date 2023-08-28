@@ -169,111 +169,100 @@ class AttendanceController extends Controller
         // Get the selected event and day IDs from the request
         $selectedEventId = $request->input('event');
         $selectedDayId = $request->input('day');
+
+        // Set other variables to null
+        $mInLabels = null;
+        $dataForMIn = null;
+        $afOutLabels = null;
+        $dataForAfOut = null;
+        $scatterLabels = null;
+        $scatterValues = null;
     
         // Retrieve data for the charts with filters
-        $yearLevelData = $this->applyFiltersToYearLevelData($selectedEventId, $selectedDayId);
-        $idNoData = $this->applyFiltersToIdNoData($selectedEventId, $selectedDayId);
-        $mInData = $this->applyFiltersToMInData($selectedEventId, $selectedDayId);
-        $afOutData = $this->applyFiltersToAfOutData($selectedEventId, $selectedDayId);
-    
-        // Extract data for year_level chart
-        $yearLevelLabels = [];
+        $yearLevelLabels = ['1st', '2nd', '3rd', '4th'];
         $dataByYearLevel = [];
     
-        foreach ($yearLevelData as $attendance) {
-            $yearLevel = $attendance->year_level;
-    
-            $yearLevelLabels[] = $yearLevel;
-            $dataByYearLevel[$yearLevel] = $attendance->count;
+        if ($selectedEventId && $selectedDayId) {
+            $yearLevelData = $this->getYearLevelDataCounts($selectedEventId, $selectedDayId);
+            $dataByYearLevel = array_values($yearLevelData);
+        }
+        
+        if ($selectedEventId && $selectedDayId) {
+            $scatterData = $this->getScatterChartData($selectedEventId, $selectedDayId);
+            
+            // Extract label and data arrays
+            $scatterLabels = array_column($scatterData, 'label');
+            $scatterValues = array_column($scatterData, 'count');
         }
     
-        // Extract data for id_no scatter plot
-        $scatterData = [];
+        // Fetch all events and days
+        $events = Event::get();
+        $days = Day::get();
+
+        // Prepare days grouped by event for JavaScript
+        $daysByEvent = $days->groupBy('event_id')->map(function ($days) {
+            return $days->map(function ($day) {
+                return [
+                    'id' => $day->id,
+                    'day_number' => $day->day_number,
+                    'event' => [
+                        'name' => $day->event->name,
+                    ],
+                ];
+            });
+        });
+
+        return view('dashboard', compact('yearLevelLabels', 'dataByYearLevel', 'scatterLabels', 'scatterValues', 'mInLabels', 'dataForMIn', 'afOutLabels', 'dataForAfOut', 'selectedEventId', 'selectedDayId', 'events', 'days', 'daysByEvent'));
+    }
     
-        foreach ($idNoData as $attendance) {
-            $idNoYear = $attendance->id_no_year;
-            $count = $attendance->count;
     
-            // Format data for scatter plot
-            $scatterData[] = ['x' => $idNoYear, 'y' => $count];
+    protected function getYearLevelDataCounts($eventId, $dayId)
+    {
+        $yearLevels = ['1', '2', '3', '4'];
+        $counts = [];
+    
+        foreach ($yearLevels as $yearLevel) {
+            $query = "
+            SELECT COUNT(*) AS row_count
+            FROM attendances
+            INNER JOIN days ON attendances.day_id = days.id
+            INNER JOIN events ON days.event_id = events.id
+            INNER JOIN students ON attendances.student_id = students.id
+            WHERE 
+                events.id = ? AND 
+                days.id = ? AND 
+                (attendances.m_in = 1 OR attendances.m_in = 0) AND
+                students.year_level = ?
+            ";
+    
+            $result = DB::select($query, [$eventId, $dayId, $yearLevel]);
+            $counts[$yearLevel] = $result[0]->row_count;
         }
     
-        // Data for m_in bar chart
-        $mInLabels = ['m_in = 1', 'm_in != 1'];
-        $dataForMIn = [$mInData->m_in_count, $mInData->not_m_in_count];
-    
-        // Data for af_out bar chart
-        $afOutLabels = ['af_out = 1', 'af_out != 1'];
-        $dataForAfOut = [$afOutData->af_out_count, $afOutData->not_af_out_count];
-    
-        // Get the list of events and days for the filters
-        $events = Event::all();
-        $days = Day::all();
-    
-        // Pass the variables to the view
-        return view('dashboard', compact('yearLevelLabels', 'dataByYearLevel', 'scatterData', 'mInLabels', 'dataForMIn', 'afOutLabels', 'dataForAfOut', 'selectedEventId', 'selectedDayId', 'events', 'days'));
-    }
-    
-
-    protected function applyFiltersToYearLevelData($eventId, $dayId)
-    {
-        return Day::join('attendances', 'days.id', '=', 'attendances.day_id')
-            ->join('students', 'attendances.student_id', '=', 'students.id')
-            ->when($eventId, function ($query) use ($eventId) {
-                $query->where('days.event_id', $eventId);
-            })
-            ->when($dayId, function ($query) use ($dayId) {
-                $query->where('days.id', $dayId);
-            })
-            ->select('students.year_level', 
-                DB::raw('COUNT(CASE WHEN attendances.m_in = 1 OR attendances.af_out = 1 THEN 1 ELSE NULL END) as count'))
-            ->groupBy('students.year_level')
-            ->get();
+        return $counts;
     }
 
-    protected function applyFiltersToIdNoData($eventId, $dayId)
+    protected function getScatterChartData($eventId, $dayId)
     {
-        return Day::join('attendances', 'days.id', '=', 'attendances.day_id')
-            ->join('students', 'attendances.student_id', '=', 'students.id')
-            ->when($eventId, function ($query) use ($eventId) {
-                $query->where('days.event_id', $eventId);
-            })
-            ->when($dayId, function ($query) use ($dayId) {
-                $query->where('days.id', $dayId);
-            })
-            ->select(DB::raw("SUBSTRING(students.id_no, 1, 4) as id_no_year"), 
-                DB::raw('COUNT(CASE WHEN attendances.m_in = 1 OR attendances.af_out = 1 THEN 1 ELSE NULL END) as count'))
-            ->groupBy('id_no_year')
-            ->get();
+        $query = "
+        SELECT LEFT(students.id_no, 4) AS label, COUNT(*) AS count
+        FROM attendances
+        INNER JOIN days ON attendances.day_id = days.id
+        INNER JOIN events ON days.event_id = events.id
+        INNER JOIN students ON attendances.student_id = students.id
+        WHERE 
+            events.id = ? AND 
+            days.id = ? AND 
+            (attendances.m_in = 1 OR attendances.m_in = 0)
+        GROUP BY label
+        ORDER BY label
+        LIMIT 10
+        ";
+    
+        $result = DB::select($query, [$eventId, $dayId]);
+        return $result;
     }
-
-    protected function applyFiltersToMInData($eventId, $dayId)
-    {
-        return Day::join('attendances', 'days.id', '=', 'attendances.day_id')
-            ->when($eventId, function ($query) use ($eventId) {
-                $query->where('days.event_id', $eventId);
-            })
-            ->when($dayId, function ($query) use ($dayId) {
-                $query->where('days.id', $dayId);
-            })
-            ->select(DB::raw('COUNT(CASE WHEN attendances.m_in = 1 THEN 1 ELSE NULL END) as m_in_count'),
-                     DB::raw('COUNT(CASE WHEN attendances.m_in = 0 THEN 1 ELSE NULL END) as not_m_in_count'))
-            ->first();
-    }
-
-    protected function applyFiltersToAfOutData($eventId, $dayId)
-    {
-        return Day::join('attendances', 'days.id', '=', 'attendances.day_id')
-            ->when($eventId, function ($query) use ($eventId) {
-                $query->where('days.event_id', $eventId);
-            })
-            ->when($dayId, function ($query) use ($dayId) {
-                $query->where('days.id', $dayId);
-            })
-            ->select(DB::raw('COUNT(CASE WHEN attendances.af_out = 1 THEN 1 ELSE NULL END) as af_out_count'),
-                     DB::raw('COUNT(CASE WHEN attendances.af_out = 0 THEN 1 ELSE NULL END) as not_af_out_count'))
-            ->first();
-    }
+    
     
     
     

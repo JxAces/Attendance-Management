@@ -13,7 +13,7 @@
                             <div class="col-md-4">
                                 <label for="event">Select Event:</label>
                                 <select name="event" id="event" class="form-control">
-                                    <option value="">All Events</option>
+                                    <option value="">Events</option>
                                     @foreach ($events as $event)
                                         <option value="{{ $event->id }}"
                                             {{ $selectedEventId == $event->id ? 'selected' : '' }}>
@@ -24,14 +24,8 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="day">Select Day:</label>
-                                <select name="day" id="day" class="form-control">
-                                    <option value="">All Days</option>
-                                    @foreach ($days as $day)
-                                        <option value="{{ $day->id }}"
-                                            {{ $selectedDayId == $day->id ? 'selected' : '' }}>
-                                            {{ $day->date }} (Event: {{ $day->event->name }})
-                                        </option>
-                                    @endforeach
+                                <select name="day" id="day" class="form-control" {{ empty($selectedEventId) ? 'disabled' : '' }}>
+                                    <option value="">Days</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -79,14 +73,41 @@
 @push('dashboard')
 <script src="{{ asset('js/Chart.min.js') }}"></script>
 <script>
+
+    document.getElementById('event').addEventListener('change', function () {
+            const daySelect = document.getElementById('day');
+            const selectedEventId = this.value;
+            
+            // Clear existing options
+            while (daySelect.options.length > 1) {
+                daySelect.remove(daySelect.options.length - 1);
+            }
+            
+            // Populate day options based on selected event
+            if (selectedEventId) {
+                const daysForEvent = {!! json_encode($daysByEvent) !!}[selectedEventId];
+                for (const day of daysForEvent) {
+                    const option = document.createElement('option');
+                    option.value = day.id;
+                    option.text = `Day ${day.day_number} (Event: ${day.event.name})`;
+                    daySelect.add(option);
+                }
+            }
+            
+            // Enable/disable day select
+            daySelect.disabled = !selectedEventId;
+            // Clear selected day
+            daySelect.selectedIndex = 0;
+        });
+
     var ctxYearLevel = document.getElementById('lineChartYearLevel').getContext('2d');
     var lineChartYearLevel = new Chart(ctxYearLevel, {
         type: 'line',
         data: {
-            labels: @json($yearLevelLabels),
+            labels: {!! json_encode($yearLevelLabels) !!},
             datasets: [{
                 label: 'Attendance based on Year',
-                data: @json(array_values($dataByYearLevel)),
+                data: {!! json_encode($dataByYearLevel) !!},
                 borderColor: 'rgba(75, 192, 192, 1)',
                 fill: false
             }]
@@ -96,71 +117,75 @@
         }
     });
 
+
     var ctxIdNo = document.getElementById('scatterChartIdNo').getContext('2d');
     var scatterChartIdNo = new Chart(ctxIdNo, {
-        type: 'scatter', // Use 'scatter' chart type for scatter plot
+        type: 'scatter',
         data: {
+            labels: {!! json_encode($scatterLabels) !!},
             datasets: [{
-                label: 'Attendance based on ID# by Year',
-                data: @json($scatterData),
+                label: 'Attendance based on Student ID#',
+                data: {!! json_encode($scatterValues) !!},
                 borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Add background color for data points
-                pointRadius: 5, // Set the radius of each data point
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                pointRadius: 5,
             }]
         },
         options: {
             scales: {
                 x: {
-                    type: 'category', // Use 'category' scale for x-axis
+                    type: 'category',
                     title: {
                         display: true,
-                        text: 'Year ID'
+                        text: 'ID Number'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Count of Year ID'
+                        text: 'Present'
                     }
                 }
             }
         }
     });
 
-    var ctxBarMIn = document.getElementById('barChartMIn').getContext('2d');
-    var barChartMIn = new Chart(ctxBarMIn, {
-        type: 'bar',
-        data: {
-            labels: @json($mInLabels),
-            datasets: [{
-                label: 'Sign in Morning',
-                data: @json($dataForMIn),
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            // Add any options you need for your chart
-        }
-    });
 
-    var ctxBarAfOut = document.getElementById('barChartAfOut').getContext('2d');
-    var barChartAfOut = new Chart(ctxBarAfOut, {
-        type: 'bar',
-        data: {
-            labels: @json($afOutLabels),
-            datasets: [{
-                label: 'Sign out Afternoon',
-                data: @json($dataForAfOut),
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            // Add any options you need for your chart
-        }
-    });
+
+    // var ctxBarMIn = document.getElementById('barChartMIn').getContext('2d');
+    // var barChartMIn = new Chart(ctxBarMIn, {
+    //     type: 'bar',
+    //     data: {
+    //         labels: @json($mInLabels),
+    //         datasets: [{
+    //             label: 'Sign in Morning',
+    //             data: @json($dataForMIn),
+    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    //             borderColor: 'rgba(75, 192, 192, 1)',
+    //             borderWidth: 1
+    //         }]
+    //     },
+    //     options: {
+    //         // Add any options you need for your chart
+    //     }
+    // });
+
+    // var ctxBarAfOut = document.getElementById('barChartAfOut').getContext('2d');
+    // var barChartAfOut = new Chart(ctxBarAfOut, {
+    //     type: 'bar',
+    //     data: {
+    //         labels: @json($afOutLabels),
+    //         datasets: [{
+    //             label: 'Sign out Afternoon',
+    //             data: @json($dataForAfOut),
+    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    //             borderColor: 'rgba(75, 192, 192, 1)',
+    //             borderWidth: 1
+    //         }]
+    //     },
+    //     options: {
+    //         // Add any options you need for your chart
+    //     }
+    // });
 </script>
 @endpush

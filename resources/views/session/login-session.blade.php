@@ -5,9 +5,10 @@
 <main class="main-content mt-0">
     <section>
         <div class="page-header d-flex justify-content-center align-items-center min-vh-75">
-            <div class="d-flex flex-column align-items-center" style="height: 400px;">
+            <div class="d-flex flex-column align-items-center" style="height: 700px;">
                 <img src="{{ asset('assets/img/ccs.jpg') }}" alt="..." class="col-md-2" style> 
-                <div class="card-body bg-white shadow rounded p-4 mt-4" style="width: 100%; height: 100%; max-width: 667px;"> 
+                <h3>Attendance Monitoring System</h3>
+                <div class="card-body bg-white shadow rounded p-4 mt-4" style="width: 100%; height: 100%; max-width: 600px;"> 
                     <form role="form" method="POST" action="/session">
                         @csrf
                             <label for="email">Email</label>

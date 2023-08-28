@@ -47,7 +47,7 @@
                                                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                    <button type="button" class="btn btn-danger btn-sm delete-event-button">Delete</button>
                                                 </form>
                                             @else
                                                 <a href="{{ url('/attendances') }}" class="btn btn-success btn-sm">Get Attendance</a>
@@ -163,6 +163,7 @@
       });
     @endif
 
+
     // JavaScript/jQuery code to handle the button click event
     j('a.btn-info').click(function(e) {
       e.preventDefault(); // Prevent the default behavior of the anchor tag
@@ -203,6 +204,28 @@
         }
       });
     });
+
+            // Handle delete event button click
+        j('.delete-event-button').click(function() {
+            var form = j(this).closest('form'); // Get the parent form
+            var eventId = form.attr('data-event-id'); // Get the event ID from data attribute
+            var eventName = form.attr('data-event-name'); // Get the event name from data attribute
+
+            Swal.fire({
+                title: 'Confirm Deletion',
+                text: `Are you sure you want to delete the event "{{ $event->name }}"? This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Submit the form for deletion
+                }
+            });
+        });
   });
 </script>
 
