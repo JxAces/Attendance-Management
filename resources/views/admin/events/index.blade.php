@@ -213,7 +213,7 @@
 
             Swal.fire({
                 title: 'Confirm Deletion',
-                text: `Are you sure you want to delete the event "{{ $event->name }}"? This action cannot be undone.`,
+                text: `Are you sure you want to delete the event? This action cannot be undone.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',

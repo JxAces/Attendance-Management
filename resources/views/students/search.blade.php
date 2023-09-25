@@ -4,8 +4,8 @@
 <div class="container">
     <h1 id="clock" class="text-center mt-4 h3"></h1>
     <p id="eventDetails" class="text-center mt-2 h5"></p>
-    <div class="text-center">
-        <video id="qr-scanner" style="max-width: 100%; height: auto;"></video>
+    <div class="text-center" style="max-width: 100%; height: auto;">
+        <div id="qr-scanner" ></div>
     </div>
     <h2 class="mt-4 h4">Search Students by ID</h2>
     <div class="d-flex align-items-center"> <!-- Added a flex container for alignment -->
@@ -153,22 +153,60 @@
             $('#addStudentForm').submit();
         });
 
-            let scanner = new Instascan.Scanner({ video: document.getElementById('qr-scanner') });
-            Instascan.Camera.getCameras().then(function (cameras) {
-                if (cameras.length > 0) {
-                    scanner.start(cameras[0]);
-                } else {
-                    console.error('No cameras found.');
-                }
-            }).catch(function (error) {
-                console.error(error);
-            });
-            scanner.addListener('scan', function (content) {
-                studentSelect[0].selectize.setValue(content);
-                studentSelect[0].selectize.search(content);
-                // Assuming the QR code content is the student's ID
-                handleAttendance(content);
-            });
+        // Initialize QuaggaJS scanner
+        let scannerIsRunning = false; // Track whether the scanner is running
+    
+    // Initialize QuaggaJS scanner
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector("#qr-scanner"), // Use the video element
+        },
+        decoder: {
+            readers: ["code_39_reader"], // Use Code 39 barcode reader
+        },
+    }, function (err) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log("Barcode scanner is initialized.");
+        startScanner(); // Start the scanner initially
+    });
+
+    // Function to start the scanner
+    function startScanner() {
+        if (!scannerIsRunning) {
+            Quagga.start();
+            scannerIsRunning = true;
+        }
+    }
+
+    // Function to stop the scanner
+    function stopScanner() {
+        if (scannerIsRunning) {
+            Quagga.stop();
+            scannerIsRunning = false;
+        }
+    }
+
+    // Listen for barcode scans
+    Quagga.onDetected(function (data) {
+        const scannedCode = data.codeResult.code;
+        
+        // Stop the scanner after a successful scan
+        stopScanner();
+        
+        // Handle the scanned Code 39 barcode here
+        studentSelect[0].selectize.setValue(scannedCode);
+        studentSelect[0].selectize.search(scannedCode);
+        handleAttendance(scannedCode);
+        
+        // Start the scanner again after a delay (e.g., 2 seconds)
+        setTimeout(startScanner, 2000); // Adjust the delay as needed
+    });
+
 
         function handleAttendance(studentId) {
             // Fetch student details and attendance information using the scanned student ID
