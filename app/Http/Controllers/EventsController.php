@@ -9,6 +9,7 @@ use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\ECMember;
 
 class EventsController extends Controller
 {
@@ -175,11 +176,13 @@ class EventsController extends Controller
         
                 $day->save();
         
-                // Update attendance records for each shift individually
-                $this->updateAttendanceShift($day, 'm_in', 'sign_in_morning');
-                $this->updateAttendanceShift($day, 'm_out', 'sign_out_morning');
-                $this->updateAttendanceShift($day, 'af_in', 'sign_in_afternoon');
-                $this->updateAttendanceShift($day, 'af_out', 'sign_out_afternoon');
+                if ($day) {
+                    // Update the attendance shift based on $day and $studentId
+                    $this->updateAttendanceShift($day, 'm_in', 'sign_in_morning', $request->student_id);
+                    $this->updateAttendanceShift($day, 'm_out', 'sign_out_morning', $request->student_id);
+                    $this->updateAttendanceShift($day, 'af_in', 'sign_in_afternoon', $request->student_id);
+                    $this->updateAttendanceShift($day, 'af_out', 'sign_out_afternoon', $request->student_id);
+                }
             }
         }
     
@@ -187,22 +190,35 @@ class EventsController extends Controller
         return redirect()->route('events.index')->with('success', 'Event and days updated successfully');
     }    
     
-    protected function updateAttendanceShift($day, $shiftField, $timeField)
-    {
-        if ($day->$timeField !== null) {
-            $attendances = Attendance::where('day_id', $day->id)->get(); 
-            foreach($attendances as $attendance)
-            {
-                if($attendance->$shiftField->value != 1)
-                {
-                  $attendance->$shiftField = 5;
-                  $attendance->save();
+    protected function updateAttendanceShift($day, $shiftField, $timeField, $studentId)
+{
+    if ($day->$timeField !== null) {
+        $attendances = Attendance::where('day_id', $day->id)->get(); 
+        foreach ($attendances as $attendance) {
+            if ($attendance->$shiftField->value != 1) {
+                // Check if the student is an EC Member
+                $isECMember = ECMember::where('id_no', $studentId)->exists();
+
+                if ($isECMember) {
+                    $attendance->$shiftField = 6; 
+                } else {
+                    $attendance->$shiftField = 5;
                 }
+
+                $attendance->save();
             }
+        }
+    } else {
+        // Check if the student is an EC Member
+        $isECMember = ECMember::where('id_no', $studentId)->exists();
+
+        if ($isECMember) {
+            Attendance::where('day_id', $day->id)->update([$shiftField => 6]);
         } else {
             Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
         }
-    }    
+    }
+}    
     
     /**
      * Remove the specified resource from storage.

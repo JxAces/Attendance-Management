@@ -27,6 +27,6 @@ class ImportStudentController extends Controller
 
         // Additional logic after import if needed
 
-        return view('admin.import-students');
+        return redirect()->back()->with('success', 'EC Officers imported successfully!');
     }
 }

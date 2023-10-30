@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
-
+use App\Http\Controllers\ImportECOfficerController;
 use App\Http\Controllers\AttendanceController;
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +93,9 @@ Route::get('/login', function () {
 
 Route::get('/import-students', [ImportStudentController::class, 'index'])->name('import-students.index');
 Route::post('import-students-file', [ImportStudentController::class, 'import'])->name('import.students.file');
+Route::post('import/ecofficers/file', [ImportECOfficerController::class, 'importECOfficers'])->name('import.ecofficers.file');
+
+
 
 Route::get('events', [EventsController::class, 'index'])->name('events.index');
 Route::get('events/create', [EventsController::class, 'create'])->name('events.create');
