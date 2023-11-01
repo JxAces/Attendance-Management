@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Imports\ECOfficersImport;
+use App\Jobs\ProcessECOfficersImport;
+use Maatwebsite\Excel\Facades\Excel;
+
+class ImportECOfficerController extends Controller
+{
+
+    public function index()
+    {
+        return view('admin.import-students');   
+    }
+    
+    public function importECOfficers(Request $request)
+    {
+        
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        
+        Excel::import(new ECOfficersImport, $request->file('excel_file'));
+
+       
+        return redirect()->back()->with('success', 'EC Officers imported successfully!');
+        return view('admin.import-students');
+    }
+}
