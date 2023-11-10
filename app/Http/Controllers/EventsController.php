@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Day;
 use App\Models\Student;
+use App\Models\ECMember;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -188,21 +189,42 @@ class EventsController extends Controller
     }    
     
     protected function updateAttendanceShift($day, $shiftField, $timeField)
-    {
-        if ($day->$timeField !== null) {
-            $attendances = Attendance::where('day_id', $day->id)->get(); 
-            foreach($attendances as $attendance)
-            {
-                if($attendance->$shiftField->value != 1)
-                {
-                  $attendance->$shiftField = 5;
-                  $attendance->save();
+{
+    $ECMembers = ECMember::all();
+    $students = Student::all();
+
+    if ($day->$timeField !== null) {
+        $attendances = Attendance::where('day_id', $day->id)->get(); 
+        foreach ($attendances as $attendance) {
+            $student = $students->where('id', $attendance->student_id)->first();
+            
+            if ($student) {
+                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
+                    $attendance->$shiftField = 6;
+                } else {
+                    $attendance->$shiftField = 5;
                 }
+                $attendance->save();
             }
-        } else {
-            Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
         }
-    }    
+    } else {
+        $attendances = Attendance::where('day_id', $day->id)->get();
+        foreach ($attendances as $attendance) {
+            $student = $students->where('id', $attendance->student_id)->first();
+            
+            if ($student) {
+                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
+                    $attendance->$shiftField = 6;
+                } else {
+                    $attendance->$shiftField = 0;
+                }
+                $attendance->save();
+            }
+        } 
+    }
+}
+
+    
     
     /**
      * Remove the specified resource from storage.

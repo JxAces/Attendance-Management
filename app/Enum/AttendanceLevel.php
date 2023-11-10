@@ -9,4 +9,5 @@ enum AttendanceLevel: int
     case Late = 2;
     case Excuse = 4;
     case Absent = 5;
+    case EC = 6;
 }

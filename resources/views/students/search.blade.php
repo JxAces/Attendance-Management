@@ -153,59 +153,22 @@
             $('#addStudentForm').submit();
         });
 
-        // Initialize QuaggaJS scanner
-        let scannerIsRunning = false; // Track whether the scanner is running
-    
-    // Initialize QuaggaJS scanner
-    Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: document.querySelector("#qr-scanner"), // Use the video element
-        },
-        decoder: {
-            readers: ["code_39_reader"], // Use Code 39 barcode reader
-        },
-    }, function (err) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log("Barcode scanner is initialized.");
-        startScanner(); // Start the scanner initially
-    });
-
-    // Function to start the scanner
-    function startScanner() {
-        if (!scannerIsRunning) {
-            Quagga.start();
-            scannerIsRunning = true;
-        }
-    }
-
-    // Function to stop the scanner
-    function stopScanner() {
-        if (scannerIsRunning) {
-            Quagga.stop();
-            scannerIsRunning = false;
-        }
-    }
-
-    // Listen for barcode scans
-    Quagga.onDetected(function (data) {
-        const scannedCode = data.codeResult.code;
-        
-        // Stop the scanner after a successful scan
-        stopScanner();
-        
-        // Handle the scanned Code 39 barcode here
-        studentSelect[0].selectize.setValue(scannedCode);
-        studentSelect[0].selectize.search(scannedCode);
-        handleAttendance(scannedCode);
-        
-        // Start the scanner again after a delay (e.g., 2 seconds)
-        setTimeout(startScanner, 2000); // Adjust the delay as needed
-    });
+        let scanner = new Instascan.Scanner({ video: document.getElementById('video-element') });
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            scanner.addListener('scan', function (content) {
+                studentSelect[0].selectize.setValue(content);
+                studentSelect[0].selectize.search(content);
+                // Assuming the QR code content is the student's ID
+                handleAttendance(content);
+            });
 
 
         function handleAttendance(studentId) {
