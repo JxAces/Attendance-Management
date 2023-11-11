@@ -4,8 +4,8 @@
 <div class="container">
     <h1 id="clock" class="text-center mt-4 h3"></h1>
     <p id="eventDetails" class="text-center mt-2 h5"></p>
-    <div class="text-center" style="max-width: 100%; height: auto;">
-        <div id="qr-scanner" ></div>
+    <div class="text-center">
+        <video id="qr-scanner" style="max-width: 100%; height: auto;"></video>
     </div>
     <h2 class="mt-4 h4">Search Students by ID</h2>
     <div class="d-flex align-items-center"> <!-- Added a flex container for alignment -->
@@ -153,7 +153,7 @@
             $('#addStudentForm').submit();
         });
 
-        let scanner = new Instascan.Scanner({ video: document.getElementById('video-element') });
+            let scanner = new Instascan.Scanner({ video: document.getElementById('qr-scanner') });
             Instascan.Camera.getCameras().then(function (cameras) {
                 if (cameras.length > 0) {
                     scanner.start(cameras[0]);
@@ -169,7 +169,6 @@
                 // Assuming the QR code content is the student's ID
                 handleAttendance(content);
             });
-
 
         function handleAttendance(studentId) {
             // Fetch student details and attendance information using the scanned student ID
@@ -377,3 +376,4 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
+
