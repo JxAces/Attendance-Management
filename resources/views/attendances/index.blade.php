@@ -2,42 +2,46 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center">Attendances</h1>
+    <h1 class="text-center">Attendances List</h1>
 
     <!-- Filter Form -->
     <form action="{{ route('attendances.index') }}" method="GET" class="mb-3">
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="event_id" class="form-label">Event</label>
                 <select name="event_id" class="form-control" id="event_id">
                     <option value="">Select Event</option>
                     @foreach ($events as $event)
-                        <option value="{{ $event->id }}" {{ request('event_id') == $event->id ? 'selected' : '' }}>
-                            {{ $event->name }}
-                        </option>
+                    <option value="{{ $event->id }}" {{ request('event_id')==$event->id ? 'selected' : '' }}>
+                        {{ $event->name }}
+                    </option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="day_number" class="form-label">Day Number</label>
-                <input type="number" name="day_number" class="form-control" id="day_number" value="{{ request('day_number') }}">
+                <input type="number" name="day_number" class="form-control" id="day_number"
+                    value="{{ request('day_number') }}">
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="search" class="form-label">Search</label>
-                <input type="text" name="search" class="form-control" id="search" value="{{ request('search') }}">
-            </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="year_level" class="form-label">Year Level</label>
-                <input type="number" name="year_level" class="form-control" id="year_level" value="{{ request('year_level') }}">
+                <input type="number" name="year_level" class="form-control" id="year_level"
+                    value="{{ request('year_level') }}">
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-            <a href="#" id="exportButton" class="btn btn-success">Export to Excel</a>
+            <div class="col-md-5 mb-3">
+                <label for="search" class="form-label">Search</label>
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" id="search" value="{{ request('search') }}">
+                </div>
+            </div>
+            <div class="col-md-4 mb-3 mt-55">
+                <button type="submit" id="exportButton" class="btn btn-success btn-block">Export to Excel</button>
+            </div>
         </div>
     </form>
+
     <!-- Table displaying attendances -->
     <div class="table-responsive">
         <table class="table text-center">
@@ -66,12 +70,12 @@
 <!-- Include the jQuery library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#event_id, #day_number, #search').on('change keyup', function() {
+    $(document).ready(function () {
+        $('#event_id, #day_number, #search').on('change keyup', function () {
             updateTable();
         });
 
-        $('#exportButton').on('click', function() {
+        $('#exportButton').on('click', function () {
             exportData();
         });
 
@@ -88,10 +92,10 @@
                     day_number: dayNumber,
                     search: searchValue
                 },
-                success: function(response) {
+                success: function (response) {
                     $('#attendanceTableBody').html(response);
                 },
-                error: function() {
+                error: function () {
                     alert('An error occurred while fetching data.');
                 }
             });
@@ -103,9 +107,9 @@
             var searchValue = $('#search').val();
 
             var exportUrl = '{{ route('attendances.export-data') }}' +
-                            '?event_id=' + eventId +
-                            '&day_number=' + dayNumber +
-                            '&search=' + searchValue;
+                '?event_id=' + eventId +
+                '&day_number=' + dayNumber +
+                '&search=' + searchValue;
 
             window.location.href = exportUrl;
         }

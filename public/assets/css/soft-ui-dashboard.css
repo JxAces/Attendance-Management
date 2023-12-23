@@ -7515,6 +7515,9 @@ textarea.form-control-lg {
 .mt-2 {
   margin-top: 0.5rem !important;
 }
+.mt-55 {
+  margin-top: 2.3rem !important;
+}
 
 .mt-3 {
   margin-top: 1rem !important;
@@ -20835,81 +20838,69 @@ pre[class*=language-] {
   padding: 20px; /* Add padding as needed */
 }
 
+/* -------------- LOGIN DESIGN ---------------*/
+
 .main-container {
   width: 100%;
-  height: 100%;
+  height: 100vh; /* 100% of the viewport height */
   position: relative;
   background: white;
 }
 
-
 .logo {
-  width: 506px;
-  height: 173px;
-  position: absolute;
-  left: 1069px;
-  top: 51px;
+  width: 100%; /* Adjust width to 100% */
+  max-width: 506px; /* Set a maximum width if needed */
+  height: auto; /* Allow height to adjust proportionally */
+  margin: 0 auto; /* Center the logo */
   font-family: 'Peace', sans-serif;
   font-weight: 400;
   color: #153f53;
-  font-size: 130px;
-  flex-shrink: 0;
+  font-size: 5vw; /* Use vw (viewport width) for font size */
+  text-align: center; /* Center text */
 }
 
-.content{
+.content {
+  display: flex;
   justify-content: center;
-  padding-top: 50px;
+  align-items: center;
+  height: 100%;
 }
 
 .title,
 .council-title {
-  height: 99.54px;
-  position: absolute;
   text-align: center;
-  font-size: 21.63px;
-  line-height: 38.33px;
+  font-size: 2vw; /* Use vw for font size */
   white-space: nowrap;
 }
 
 .title {
-  top: 195px;
   color: #726E6E;
   font-weight: 400;
-  left: 1068px;
 }
 
 .circle-image {
-  width: 602px;
-  height: 602px;
-  position: absolute;
-  left: 271px;
-  top: 190px;
+  width: 80%; /* Adjust width to 80% */
+  max-width: 602px; /* Set a maximum width if needed */
+  height: auto; /* Allow height to adjust proportionally */
+  margin: 0 auto; /* Center the circle image */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 301px;
+  border-radius: 50%; /* Use border-radius for a perfect circle */
 }
 
 .council-title {
-  left: 734px;
-  top: 882px;
   color: #726E6E;
   font-weight: 700;
 }
 
 .small-image {
-  width: 43px;
-  height: 52px;
-  position: absolute;
-  left: 1048px;
-  top: 878px;
+  width: 2vw; /* Use vw for width */
+  height: auto; /* Allow height to adjust proportionally */
 }
 
 .login-box {
-  width: 472px;
-  height: 528px;
-  position: absolute;
-  left: 1038px;
-  top: 309px;
-  margin: 0; /* Add this line to remove the margin */
+  width: 80%; /* Adjust width to 80% */
+  max-width: 472px; /* Set a maximum width if needed */
+  margin: 0 auto; /* Center the login box */
 }
 
 .form-container {
@@ -20920,8 +20911,11 @@ pre[class*=language-] {
   border-radius: 15px;
   padding: 20px;
   box-sizing: border-box;
-  height: 450px;
+  height: 100%;
 }
+
+/* ... other styles ... */
+
 
 .form-field {
   margin-bottom: 15px;
@@ -20978,4 +20972,98 @@ pre[class*=language-] {
   gap: -16px;
   flex-shrink: 0;
   display: flex;
+}
+
+@media screen and (max-width: 900px) {
+  .circle-image,
+  .small-image {
+      display: none; /* Hide logos when screen width is 900px or less */
+  }
+
+  .main-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: white;
+  }
+
+  .title,
+  .login-box,
+  .logo {
+      width: 100%;
+      height: auto;
+      left: auto;
+      top: auto;
+      position: static;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      display: inline-flex;
+  }
+
+  .council-title {
+      width: auto;
+      height: auto;
+      left: auto;
+      top: auto;
+      position: static;
+      justify-content: center;
+  }
+
+  .form-container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+      box-sizing: border-box;
+      height: 450px;
+  }
+}
+
+/* ---------------- END -------------- */
+
+
+.container.text-center{
+color: #153F53;
+font-family: Open Sans;
+font-size: 73.543px;
+font-style: normal;
+font-weight: 700;
+line-height: 51.6px;
+}
+.container h1{
+  margin-top: 68px;
+  width: fit-content;
+  font-size: 73px;
+}
+
+.container select,
+.container input {
+  display: flex;
+  width: 258px;
+  height: 52px; 
+  flex-shrink: 0;
+  border-radius: var(--Medium, 4px);
+  border: 1px solid #000;
+}
+
+
+.container .text-center .row{
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -0.5);
+    margin-left: calc(var(--bs-gutter-x) * -0.5);
+}
+
+.col-md-8.mb-3 .input-group .form-control{
+  flex: 0.6 1 auto;
+}
+
+.col-md-4.mb-3.mt-55 .btn-success{
+  background-color: #2B738B;
 }
