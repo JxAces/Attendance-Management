@@ -167,7 +167,7 @@ ul ol {
 }
 
 dt {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 dd {
@@ -7584,6 +7584,10 @@ textarea.form-control-lg {
   margin-top: 16rem !important;
 }
 
+.mt-22{
+  margin-top: -1.5rem !important;
+}
+
 .mt-auto {
   margin-top: auto !important;
 }
@@ -7750,6 +7754,10 @@ textarea.form-control-lg {
 
 .ms-12 {
   margin-left: 16rem !important;
+}
+
+.ms-35 {
+  margin-left: 35rem !important;
 }
 
 .ms-auto {
@@ -21017,4 +21025,78 @@ pre[class*=language-] {
   gap: -16px;
   flex-shrink: 0;
   display: flex;
+}
+
+.container .row1{
+  display: flex;
+}
+
+.container .row1 .col-md-6.mb-3{
+ flex: 1;
+ margin-right: 15px;
+}
+
+.container .row .btn{
+  margin-bottom: -4.8rem;
+}
+
+.container .text-center.mt-4.h3{
+  display: none;
+}
+
+.container.mt-22 .btn.btn-primary.mt-3{
+  display: none;
+}
+
+.selectize-control.single .selectize-input{
+  border: 1px solid #d0d0d0;
+  padding: 10px 433px;
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.1);
+  border-radius: 3px;
+  border-color: #000;
+
+}
+
+.selectize-dropdown, .selectize-input, .selectize-input input {
+  color: #303030;
+  font-family: inherit;
+  font-size: 19px !important;
+  line-height: 18px;
+}
+
+#studentSelect option {
+  font-weight: bold; /* or any other font weight value you prefer */
+}
+
+.studentdetails{
+  color: #153F53;
+  font-family: Open Sans;
+  font-size: 38.543px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 51.6px;
+}
+
+.designni{
+  color: #153F53;
+  font-family: Open Sans;
+  font-size: 28.543px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 51.6px; /* 180.779% */
+}
+
+.designni1{
+  color: #153F53;
+  font-family: Open Sans;
+  font-size: 28.543px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 51.6px; /* 180.779% */
 }
