@@ -3,17 +3,22 @@
 @section('content')
 <div class="container">
     <h1 id="clock" class="text-center mt-4 h3"></h1>
+    <h1 class="attendance">Attendance</h1>
     <p id="eventDetails" class="text-center mt-2 h5"></p>
     <div class="text-center">
-        <video id="qr-scanner" style="max-width: 100%; height: auto;"></video>
+        <video id="qr-scanner" style="max-width: 100%; height: auto; border-radius: 20px;"></video>
     </div>
-    <h2 class="mt-4 h4">Search Students by ID</h2>
-    <div class="d-flex align-items-center"> <!-- Added a flex container for alignment -->
-        <div class="form-group flex-grow-1"> <!-- Adjusted the width to grow with the flex container -->
-            <label for="studentSelect" class="h6">Search and Select Student:</label>
-            <select id="studentSelect" class="form-control"></select>
+    <div class="d-flex flex-column align-items-center"> 
+        <div class="form-group flex-grow-1"> 
+            <label for="studentSelect" class="h6"></label>
+            <select id="studentSelect" class="form-control border-0 ">
+                <option value="" class="option"disabled selected>Enter Student ID</option>
+            </select>
         </div>
-        <button id="openModalButton" class="btn btn-primary ml-2">New Student</button> <!-- Added the button -->
+        <div class="d-flex mt-3 ms-35">
+        <button id="openModalButton" class="btn btn-primary me-4">New Student</button>
+        <button id="signInButton1" type="button" class="btn btn-primary ml-2" disabled>Sign In Student</button>
+    </div>
     </div>
 </div>
 
@@ -67,15 +72,15 @@
 </div>
 
 
-<div class="container mt-4">
-    <h2 class="h4">Student Details</h2>
+<div class="container mt-22">
+    <h2 class="studentdetails">Student Details</h2>
     <div id="studentDetails"></div>
     <form action="/update-attendance" method="POST">
         @csrf
         <input type="text" name="student_id" placeholder="Student ID" required hidden>
         <input type="text" name="event_name" placeholder="Event Name" required hidden>
         <input type="text" name="day_number" placeholder="Day Number" required hidden>
-        <input type="text" name="sign_time" placeholder="Sign Time" required hidden>
+        <input type="text" name="sign_time" placeholder="Sign Time" required hidden> 
         <button id="signInButton" type="submit" class="btn btn-primary mt-3" disabled>Sign In Student</button>
     </form>
 </div>
@@ -110,6 +115,7 @@
             onChange: function (value) {
                 if (!value) {
                     $('#signInButton').prop('disabled', true);
+                    $('#signInButton1').prop('disabled', true);
                     return;
                 }
                 $.ajax({
@@ -118,16 +124,18 @@
                     dataType: 'json',
                     success: function (data) {
                         $('#studentDetails').html(`
-                            <h3 class="h5">${data.full_name}</h3>
-                            <p class="h6">ID: ${data.id_no}</p>
-                            <p class="h6">Year Level: ${data.year_level}</p>
-                            <p class="h6">Major: ${data.major}</p>
+                            <h3 class="designni1">${data.full_name}</h3>
+                            <p class="designni">ID: ${data.id_no}</p>
+                            <p class="designni">Year Level: ${data.year_level}</p>
+                            <p class="designni">Major: ${data.major}</p>
                         `);
                         $('#signInButton').prop('disabled', false);
+                        $('#signInButton1').prop('disabled', false);
                     },
                     error: function () {
                         $('#studentDetails').html('<p class="h6">Student details not found.</p>');
                         $('#signInButton').prop('disabled', true);
+                        $('#signInButton1').prop('disabled', true);
                     },
                 });
             },
@@ -199,6 +207,7 @@
                     } else {
                         $('#studentDetails').html('<p class="h6">Student details not found.</p>');
                         $('#signInButton').prop('disabled', true);
+                        $('#signInButton1').prop('disabled', true);
                     }
                 },
                 error: function () {
@@ -211,6 +220,7 @@
                         });
                     $('#studentDetails').html('<p class="h6">Student details not found.</p>');
                     $('#signInButton').prop('disabled', true);
+                    $('#signInButton1').prop('disabled', true);
                 },
             });
         }
@@ -236,11 +246,11 @@
 
         function updateButtonLabel() {
             if (isSignIn) {
-                $('#signInButton').text('Sign In Student');
+                $('#signInButton1').text('Sign In Student');
             } else if (isSignOut) {
-                $('#signInButton').text('Sign Out Student');
+                $('#signInButton1').text('Sign Out Student');
             } else {
-                $('#signInButton').text('Student Sign-In/Out');
+                $('#signInButton1').text('Student Sign-In/Out');
             }
         }
 
@@ -262,6 +272,7 @@
                 // Continue with form submission
             }
         });
+        
 
 
         // Check if the current date matches any event day and display the event
@@ -357,6 +368,14 @@
         setInterval(checkEventTime, 1000); // Check every minute
 
     });
+
+    $(document).ready(function () {
+    $("#signInButton1").click(function () {
+        // Trigger click event on #signInButton
+        $("#signInButton").click();
+    });
+});
+
 </script>
 @endsection
 <style>
