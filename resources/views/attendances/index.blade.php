@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="attendancelist">Attendances List</h1>
+    <h1 class="attendancelist">Attendance List</h1>
 
     <!-- Filter Form -->
     <form action="{{ route('attendances.index') }}" method="GET" class="mb-3">

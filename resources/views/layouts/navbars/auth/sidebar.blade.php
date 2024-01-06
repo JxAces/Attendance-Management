@@ -53,16 +53,6 @@
           <span class="nav-link-text ms-1">Import</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link {{ (Request::is('student.search') ? 'active' : '') }}" href="{{ url('/logout') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fa fa-sign-out" style="font-size: 18px;"></i>
-          </div>
-          <span class="nav-link-text ms-1">Log Out</span>
-        </a>
-      </li>
     </ul>
 
 
@@ -72,65 +62,56 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('dashboard') ? 'active' : '') }}" href="{{ url('dashboard') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fas fa-globe" style="font-size: 18px;"></i>
+          <div>
+            <img src="{{ asset('assets/img/Dashboard.png') }}" class="navbar-brand-img h-100" alt="...">
           </div>
           <span class="nav-link-text ms-1">Dashboard</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('student.search') ? 'active' : '') }}" href="{{ url('/') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fas fa-globe" style="font-size: 18px;"></i>
+        <div>
+            <img src="{{ asset('assets/img/Attendance.png') }}" class="navbar-brand-img h-100" alt="...">
           </div>
           <span class="nav-link-text ms-1">Attendance</span>
         </a>
       </li>
       <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link {{ (Request::is('attendances') ? 'active' : '') }}" href="{{ url('attendances') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fas fa-globe" style="font-size: 18px;"></i>
+        <div>
+            <img src="{{ asset('assets/img/Attendancelist.png') }}" class="navbar-brand-img h-100" alt="...">
           </div>
           <span class="nav-link-text ms-1">Attendance List</span>
         </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('import-students') ? 'active' : '') }}" href="{{ url('import-students') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fa fa-cloud" style="font-size: 18px;"></i>
+        <div>
+            <img src="{{ asset('assets/img/import.png') }}" class="navbar-brand-img h-100" alt="...">
           </div>
           <span class="nav-link-text ms-1">Import</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('events') ? 'active' : '') }}" href="{{ url('events') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fas fa-globe" style="font-size: 18px;"></i>
+        <div>
+            <img src="{{ asset('assets/img/import.png') }}" class="navbar-brand-img h-100" alt="...">
           </div>
           <span class="nav-link-text ms-1">Events</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ (Request::is('student.search') ? 'active' : '') }}" href="{{ url('/logout') }}">
-          <div
-            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-
-            <i class="fas fa-globe" style="font-size: 18px;"></i>
-          </div>
-          <span class="nav-link-text ms-1">Log Out</span>
         </a>
       </li>
     </ul>
     @endif
   </div>
-
+  <div class="d-flex justify-content-center mt-3">
+  <a class="nav-link  {{ (Request::is('student.search') ? 'active' : '') }}" href="{{ url('/logout') }}">
+          <span class="btn bg-gradient-infos logout-button">Log Out</span>
+        </a>
+  </div>
+  
+  <div class="d-flex align-items-center justify-content-center mt-3">
+    <div>CCS - Executive Council 2023</div> 
+    <img src="{{ asset('assets/img/smalllogo.png') }}" class="navbar-brand-img h-100" alt="...">
+  </div>
 </aside>

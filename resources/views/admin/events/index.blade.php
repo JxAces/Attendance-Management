@@ -1,18 +1,22 @@
 @extends('layouts.user_type.auth')
 
 @section('content')
- 
+
+<div class="container mb-5"> 
+    <h1 class="events">Manage Events</h1>
+</div>
+
 <div>
     <div class="row">
         <div class="col-12">
             <div class="card mb-4 mx-4">
-                <div class="card-header pb-0">
-                    <div class="d-flex flex-row justify-content-between">
+                <div class="card-header pb-0 ">
+                    <div class="d-flex align-items-center">
                         <div>
-                            <h5 class="mb-0">All Events</h5>
+                            <div class="allevents">All Events</div>
                         </div>
                         @if(auth()->check() && auth()->user()->admin)
-                        <a href="#" class="btn bg-gradient-info btn-sm mb-0" id="newEventButton" type="button">+&nbsp; New Events</a>
+                        <a href="#" class="btn bg-gradient-infos mt-3" id="newEventButton" type="button">Add an Event</a>
                         @endif
                     </div>
                 </div>
@@ -22,7 +26,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        #
+                                        
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Events

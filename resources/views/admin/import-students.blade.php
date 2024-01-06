@@ -2,8 +2,12 @@
 
 @section('content')
 
-<div class="card">
-  <div class="card-header bg-info text-white">
+<div class="container mb-5"> 
+    <h1 class="import">Import</h1>
+</div>
+
+<div class="card mx-7">
+  <div class="card-header bg-infos text-white">
     <h3><i class="fa fa-cloud-upload" style="font-size: 25px;"></i> Import Students</h3>
   </div>
   <div class="card-body">
@@ -16,8 +20,8 @@
   </div>
 </div>
 
-<div class="card mt-4">
-  <div class="card-header bg-success text-white">
+<div class="card mt-4 mx-7">
+  <div class="card-header bg-successs text-white">
     <h3><i class="fa fa-cloud-upload" style="font-size: 25px;"></i> Import EC Officers</h3>
   </div>
   <div class="card-body">
