@@ -30,11 +30,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="search" class="form-label">Search</label>
+            <div class="col-md-3 mb-3">
+                <label for="search" class="form-label">ID Number</label>
                 <input type="text" name="search" class="form-control" id="search" value="{{ request('search') }}">
             </div>
-                <div class="col-md-6 mb-3">
+            <div class="col-md-3 mb-3">
+                <label for="course" class="form-label">Course</label>
+                <input type="text" name="course" class="form-control" id="course"
+                    value="{{ request('course') }}">
+            </div>
+                <div class="col-md-3 mb-3">
                     <a href="#" id="exportButton" class="btn btn-success">Export to Excel</a>
                 </div>
         </div>
@@ -64,52 +69,103 @@
     </div>
 </div>
 
-<!-- Include the jQuery library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#event_id, #day_number, #search').on('change keyup', function () {
-            updateTable();
-        });
+    <!-- Include the jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var originalData = @json($attendances);
 
-        $('#exportButton').on('click', function () {
-            exportData();
-        });
-
-        function updateTable() {
-            var eventId = $('#event_id').val();
-            var dayNumber = $('#day_number').val();
-            var searchValue = $('#search').val();
-
-            $.ajax({
-                url: '{{ route('attendances.index') }}',
-                type: 'GET',
-                data: {
-                    event_id: eventId,
-                    day_number: dayNumber,
-                    search: searchValue
-                },
-                success: function (r esponse) {
-                    $('#attendanceTableBody').html(response);
-                },
-                error: function () {
-                    alert('An error occurred while fetching data.');
-                }
+            $('#event_id, #day_number, #search, #year_level, #course').on('change keyup', function () {
+                updateTable();
             });
-        }
 
-        function exportData() {
-            var eventId = $('#event_id').val();
-            var dayNumber = $('#day_number').val();
-            var searchValue = $('#search').val();
+            $('#exportButton').on('click', function () {
+                exportData();
+            });
 
-            var exportUrl = '{{ route('attendances.export-data') }}' +
-                event_id=' + eventId +
-            day_number = ' + dayNumber +
-            search = ' + searchValue;
+            function updateTable() {
+                var eventId = $('#event_id').val();
+                var dayNumber = $('#day_number').val();
+                var yearLevel = $('#year_level').val();
+                var course = $('#course').val();
+                var searchValue = $('#search').val();
 
-            window.location.href = exportUrl;
-        }
-    });
-</script>
+                var filteredData = originalData.filter(function (attendance) {
+                    return (
+                        (eventId === '' || attendance.day.event_id == eventId) &&
+                        (dayNumber === '' || attendance.day.day_number == dayNumber) &&
+                        (searchValue === '' || attendance.student.id_no == searchValue) &&
+                        (yearLevel === '' || attendance.year_level == yearLevel) &&
+                        (course === '' || attendance.major == course)
+                    );
+                });
+
+                for (var i = 0; i < 5; i++) {
+                    console.log(originalData[i]);
+                }
+
+                updateTableBody(filteredData);
+            }
+
+            function updateTableBody(data) {
+                $('#attendanceTableBody').empty();
+
+                data.forEach(function (attendance) {
+                    var rowHtml = '<tr>';
+                    rowHtml += '<td>' + attendance.student.id_no + '</td>';
+                    rowHtml += '<td>' + attendance.student.full_name + '</td>';
+                    rowHtml += '<td>' + attendance.student.major + '</td>';
+                    rowHtml += '<td>' + attendance.student.year_level + '</td>';
+                    rowHtml += '<td>' + attendance.day.event.name + '</td>';
+                    rowHtml += '<td>' + attendance.day.day_number + '</td>';
+                    rowHtml += '<td>' + mapAttendanceLevel(attendance.m_in) + '</td>';
+                    rowHtml += '<td>' + mapAttendanceLevel(attendance.m_out) + '</td>';
+                    rowHtml += '<td>' + mapAttendanceLevel(attendance.af_in) + '</td>';
+                    rowHtml += '<td>' + mapAttendanceLevel(attendance.af_out) + '</td>';
+                    // Add more cells as needed
+                    rowHtml += '</tr>';
+
+                    $('#attendanceTableBody').append(rowHtml);
+                });
+            }
+
+            
+            function mapAttendanceLevel(attendanceLevel) {
+                switch (attendanceLevel) {
+                    case 0:
+                        return 'Free';
+                    case 1:
+                        return 'Present';
+                    case 2:
+                        return 'Late';
+                    case 4:
+                        return 'Excuse';
+                    case 5:
+                        return 'Absent';
+                    case 6:
+                        return 'EC';
+                    default:
+                        return '';
+                }
+            }
+
+            function exportData() {
+                var eventId = $('#event_id').val();
+                var dayNumber = $('#day_number').val();
+                var yearLevel = $('#year_level').val();
+                var course = $('#course').val();
+                var searchValue = $('#search').val();
+
+                var exportUrl = '{{ route('attendances.export-data') }}?' +
+                    'event_id=' + eventId +
+                    '&day_number=' + dayNumber +
+                    '&search=' + searchValue +
+                    '&year_level=' + yearLevel +
+                    '&major=' + course;
+
+                window.location.href = exportUrl;
+            }
+
+        });
+    </script>
 @endsection

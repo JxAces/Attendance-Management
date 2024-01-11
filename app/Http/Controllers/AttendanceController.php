@@ -18,53 +18,22 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attendance::query();
+        $attendances = Attendance::with(['day.event', 'student'])
+            ->join('students', 'attendances.student_id', '=', 'students.id')
+            ->join('days', 'attendances.day_id', '=', 'days.id')
+            ->orderBy('students.year_level', 'asc')
+            ->orderBy('days.day_number', 'asc')
+            ->get();
     
-        // Apply filters if provided
-        if ($request->filled('event_id')) {
-            $query->whereHas('day.event', function ($query) use ($request) {
-                $query->where('id', $request->input('event_id'));
-            });
-        }
-    
-        if ($request->filled('day_number')) {
-            $query->whereHas('day', function ($query) use ($request) {
-                $query->where('day_number', $request->input('day_number'));
-            });
-        }
-
-        if ($request->filled('year_level')) {
-            $query->whereHas('attendaces.student', function ($query) use ($request) {
-                $query->where('year_level', $request->input('year_level'));
-            });
-        }
-    
-        if ($request->filled('search')) {
-            $searchTerm = $request->input('search');
-            $query->where(function ($query) use ($searchTerm) {
-                $query->where('student_id', 'LIKE', "%$searchTerm%")
-                    ->orWhereHas('student', function ($query) use ($searchTerm) {
-                        $query->where('year_level', 'LIKE', "%$searchTerm%")
-                              ->orWhere('full_name', 'LIKE', "%$searchTerm%");
-                    });
-            });
-        }
-    
-        $attendances = $query->with(['day.event', 'student'])
-                            ->join('students', 'attendances.student_id', '=', 'students.id')
-                            ->join('days', 'attendances.day_id', '=', 'days.id')
-                            ->orderBy('students.year_level', 'asc')
-                            ->orderBy('days.day_number', 'asc')
-                            ->get();
-
         $events = Event::all();
     
         if ($request->ajax()) {
-            return view('attendances.table', compact('attendances', 'events'));
+            return response()->json(['attendances' => $attendances]);
         }
     
         return view('attendances.index', compact('attendances', 'events'));
     }
+    
 
     public function export(Request $request)
     {
@@ -117,39 +86,64 @@ class AttendanceController extends Controller
         $attendance = Attendance::where('day_id', $day->id)->where('student_id', $student->id)->first();
 
         $signInMorning = new DateTime($day->sign_in_morning);
-        $endsignInMorning = (clone $signInMorning)->modify('+1 hour');
+        $endsignInMorning = (clone $signInMorning)->modify('+1 hour 30 minutes');
+        $lateSignInMorning = (clone $signInMorning)->modify('+1 hour');
         $signOutMorning = new DateTime($day->sign_out_morning);
-        $endsignOutMorning = (clone $signOutMorning)->modify('+1 hour');
+        $endsignOutMorning = (clone $signOutMorning)->modify('+1 hour 30 minutes');
+        $lateSignOutMorning = (clone $signOutMorning)->modify('+1 hour');
         $signInAfternoon = new DateTime($day->sign_in_afternoon);
-        $endsignInAfternoon = (clone $signInAfternoon)->modify('+1 hour');
+        $endsignInAfternoon = (clone $signInAfternoon)->modify('+1 hour 30 minutes');
+        $lateSignInAfternoon = (clone $signInMorning)->modify('+1 hour');
         $signOutAfternoon = new DateTime($day->sign_out_afternoon);
-        $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour');
+        $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour 30 minutes');
+        $lateSignOutAfternon = (clone $signInMorning)->modify('+1 hour');
         $signTime = new DateTime($requestData['sign_time']);
         
         $message = "Already Signed In: " . $student->id_no;
+        $late = false;
 
         if ($signTime > $signInMorning && $signTime < $endsignInMorning) {
-            if($attendance->m_in->value === 1){
+            if($attendance->m_in->value === 1 || $attendance->m_in->value === 2){
                 return redirect()->route('student.search')->with('warning', $message);  
-            } else {
+            }  
+            if ($signTime > $lateSignInMorning){
+                $attendance->m_in = 2;
+                $late = true;
+            }
+            else {
                 $attendance->m_in = 1;
             }
         } else if ($signTime > $signOutMorning && $signTime < $endsignOutMorning) {
             if($attendance->m_out->value === 1){
                 return redirect()->route('student.search')->with('warning', $message);  
-            } else {
+            } 
+            if ($signTime > $lateSignOutMorning){
+                $attendance->m_in = 2;
+                $late = true;
+            }
+            else {
                 $attendance->m_out = 1;
             }
         } else if ($signTime > $signInAfternoon && $signTime < $endsignInAfternoon) {
             if($attendance->af_in->value === 1){
                 return redirect()->route('student.search')->with('warning', $message);  
-            } else {
+            } 
+            if ($signTime > $lateSignInAfternoon){
+                $attendance->m_in = 2;
+                $late = true;
+            }
+            else {
                 $attendance->af_in = 1;
             }
         } else if ($signTime > $signOutAfternoon && $signTime < $endsignOutAfternoon) {
             if($attendance->af_out->value === 1){
                 return redirect()->route('student.search')->with('warning', $message);  
-            } else {
+            } 
+            if ($signTime > $lateSignOutAfternon){
+                $attendance->m_in = 2;
+                $late = true;
+            }
+            else {
                 $attendance->af_out = 1;
             }
         } else {
@@ -158,6 +152,11 @@ class AttendanceController extends Controller
         }
 
         $attendance->save();
+
+        if($late == true) {
+            $message = "LATE: " . $student->id_no;
+            return redirect()->route('student.search')->with('late', $message);
+        }
 
         $message = "ID No: " . $student->id_no;
 

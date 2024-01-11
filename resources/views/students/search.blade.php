@@ -57,8 +57,15 @@
     @endif
 </div>
 <div class="custom-alert-container">
-    @if(session('warning'))
+    @if(session('late'))
     <div class="custom-alert alert alert-warning">
+        {{ session('late') }}
+    </div>
+    @endif
+</div>
+<div class="custom-alert-container">
+    @if(session('warning'))
+    <div class="custom-alert alert alert-info">
         {{ session('warning') }}
     </div>
     @endif
@@ -177,7 +184,7 @@
                 // Assuming the QR code content is the student's ID
                 handleAttendance(content);
             });
-
+ 
         function handleAttendance(studentId) {
             // Fetch student details and attendance information using the scanned student ID
             $.ajax({
@@ -272,8 +279,15 @@
                 // Continue with form submission
             }
         });
-        
 
+        function isLateForEvent(hours, minutes, timeString) {
+            const [targetHours, targetMinutes] = timeString.split(':');
+            const parsedTargetHours = parseInt(targetHours);
+            const targetTotalMinutes = (parsedTargetHours * 60) + parseInt(targetMinutes);
+            const currentTotalMinutes = (hours * 60) + minutes;
+
+            return currentTotalMinutes > targetTotalMinutes + 60;
+        }
 
         // Check if the current date matches any event day and display the event
         const eventDays = {!! json_encode($days) !!}; // Replace with the actual array of event days
@@ -309,6 +323,12 @@
                         eventDetails += "Morning Sign In";
                         isSignIn = true;
                         isSignOut = false;
+
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        if (isLate) {
+                            eventDetails += " || Late";
+                            console.log("It's late for morning sign-out!");
+                        }
                     } else if (isWithinHourAfter(currentHours, currentMinutes, signOutMorning)) {
                         eventDetails += "Morning Sign Out";
                         isSignIn = false;
@@ -343,9 +363,10 @@
 
             return (
                 currentTotalMinutes >= targetTotalMinutes &&
-                currentTotalMinutes <= targetTotalMinutes + 60
+                currentTotalMinutes <= targetTotalMinutes + 90
             );
         }
+        
 
         function format12HourTime(timeString) {
             const [hours, minutes] = timeString.split(':');
