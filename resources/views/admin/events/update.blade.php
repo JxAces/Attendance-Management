@@ -4,7 +4,13 @@
 <div class="container">
     <h1>Edit Event and Days</h1>
 
-    <form action="{{ route('events.update', ['event' => $event->id]) }}" method="POST">
+    <div id="loadingScreen" class="loading-screen">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <form action="{{ route('events.update', ['event' => $event->id]) }}" method="POST" id="editEventForm"   >
         @csrf
         @method('PUT')
 
@@ -76,20 +82,45 @@
 </div>
 
 <script>
-    // JavaScript to handle checkbox interactions
-    const checkboxes = document.querySelectorAll('.disable-group');
+    // JavaScript to handle checkbox interactions and show/hide loading screen
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.disable-group');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const editEventForm = document.getElementById('editEventForm'); // Define the form
 
-    checkboxes.forEach(checkbox => {
-        const targetName = checkbox.getAttribute('data-target');
-        const targetInput = document.querySelector(`[name="${targetName}"]`);
-        if (targetInput) {
-            checkbox.addEventListener('change', function () {
-                targetInput.disabled = this.checked;
-                if (this.checked) {
-                    targetInput.value = ''; // Clear input value
-                }
-            });
-        }
+        checkboxes.forEach(checkbox => {
+            const targetName = checkbox.getAttribute('data-target');
+            const targetInput = document.querySelector(`[name="${targetName}"]`);
+            if (targetInput) {
+                checkbox.addEventListener('change', function () {
+                    targetInput.disabled = this.checked;
+                    if (this.checked) {
+                        targetInput.value = ''; // Clear input value
+                    }
+                });
+            }
+        });
+
+        editEventForm.addEventListener('submit', function () {
+            // Show loading screen on form submission
+            loadingScreen.style.display = 'flex';
+        });
     });
 </script>
+
+<style>
+    /* Add styles for the loading screen */
+    .loading-screen {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+</style>
 @endsection

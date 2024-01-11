@@ -5,12 +5,13 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Attendance;
+use Illuminate\Http\Request;
 
 class AttendanceExport implements FromCollection, WithHeadings
 {
     protected $request;
 
-    public function __construct($request)
+    public function __construct(Request $request)
     {
         $this->request = $request;
     }
@@ -19,53 +20,54 @@ class AttendanceExport implements FromCollection, WithHeadings
     {
         $query = Attendance::query();
 
-        // Apply filters based on the request
         if ($this->request->filled('event_id')) {
-            // Apply event filter
             $query->whereHas('day.event', function ($query) {
                 $query->where('id', $this->request->input('event_id'));
             });
         }
-
+        
         if ($this->request->filled('day_number')) {
-            // Apply day number filter
             $query->whereHas('day', function ($query) {
                 $query->where('day_number', $this->request->input('day_number'));
             });
         }
-
+        
         if ($this->request->filled('search')) {
-            // Apply search filter
-            $searchTerm = $this->request->input('search');
-            $query->where(function ($query) use ($searchTerm) {
-                $query->where('student_id', 'LIKE', "%$searchTerm%")
-                    ->orWhereHas('student', function ($query) use ($searchTerm) {
-                        $query->where('id_no', 'LIKE', "%$searchTerm%")
-                            ->orWhere('full_name', 'LIKE', "%$searchTerm%");
-                    });
+            $query->whereHas('student', function ($query) {
+                $query->where('id_no', $this->request->input('search'));
             });
         }
-
-        // Add more filters based on your needs
-
+        
+        if ($this->request->filled('year_level')) {
+            $query->whereHas('student', function ($query) {
+                $query->where('year_level', $this->request->input('year_level'));
+            });
+        }
+        
+        if ($this->request->filled('major')) {
+            $query->whereHas('student', function ($query) {
+                $query->where('major', $this->request->input('major'));
+            });
+        }
+        
         $attendances = $query->with(['day.event', 'student'])
-                             ->orderBy('updated_at', 'desc')
-                             ->get();
+            ->orderBy('updated_at', 'desc')
+            ->get();        
 
         // Transform raw data into desired format
         $formattedData = [];
         foreach ($attendances as $attendance) {
             $formattedData[] = [
-                $attendance->student->id_no,     // Student ID
-                $attendance->student->full_name,      // Student
-                $attendance->student->major,         // Course
-                $attendance->student->year_level,           // Year
-                $attendance->day->event->name,        // Event
-                $attendance->day->day_number,         // Day
-                $attendance->m_in->name,   // Sign In Morning
-                $attendance->m_out->name,  // Sign Out Morning
-                $attendance->af_in->name,  // Sign In Afternoon
-                $attendance->af_out->name, // Sign Out Afternoon
+                $attendance->student->id_no, // Student ID
+                $attendance->student->full_name, // Student
+                $attendance->student->major, // Course
+                $attendance->student->year_level, // Year
+                $attendance->day->event->name, // Event
+                $attendance->day->day_number, // Day
+                $attendance->m_in->name,
+                $attendance->m_out->name,
+                $attendance->af_in->name,
+                $attendance->af_out->name,
                 // Add more data fields as needed
             ];
         }
