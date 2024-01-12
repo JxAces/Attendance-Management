@@ -93,7 +93,7 @@ class AttendanceController extends Controller
         $lateSignOutMorning = (clone $signOutMorning)->modify('+1 hour');
         $signInAfternoon = new DateTime($day->sign_in_afternoon);
         $endsignInAfternoon = (clone $signInAfternoon)->modify('+1 hour 30 minutes');
-        $lateSignInAfternoon = (clone $signInMorning)->modify('+1 hour');
+        $lateSignInAfternoon = (clone $signInAfternoon)->modify('+1 hour');
         $signOutAfternoon = new DateTime($day->sign_out_afternoon);
         $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour 30 minutes');
         $lateSignOutAfternon = (clone $signInMorning)->modify('+1 hour');
