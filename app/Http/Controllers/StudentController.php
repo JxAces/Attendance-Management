@@ -93,19 +93,19 @@ class StudentController extends Controller
                         $checkAttendance = Attendance::first();
                         if($checkAttendance->m_in->value != 0)
                         {
-                            $new_m_in = 1;
+                            $new_m_in = 0;
                         }
                         if($checkAttendance->m_out->value != 0)
                         {
-                            $new_m_out = 1;
+                            $new_m_out = 0;
                         }
                         if($checkAttendance->af_in->value != 0)
                         {
-                            $new_af_in = 1;
+                            $new_af_in = 0;
                         }
                         if($checkAttendance->af_out->value != 0)
                         {
-                            $new_af_out = 1;
+                            $new_af_out = 0;
                         }
 
                         $newStudent = Attendance::create([
@@ -116,8 +116,6 @@ class StudentController extends Controller
                             'af_in' => $new_af_in,
                             'af_out' => $new_af_out,
                         ]);
-
-                        dd($newStudent);
                     }
                 }
             }

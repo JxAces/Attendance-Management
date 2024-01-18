@@ -118,7 +118,7 @@ class AttendanceController extends Controller
                 return redirect()->route('student.search')->with('warning', $message);  
             } 
             if ($signTime > $lateSignOutMorning){
-                $attendance->m_in = 2;
+                $attendance->m_out = 2;
                 $late = true;
             }
             else {
@@ -129,7 +129,7 @@ class AttendanceController extends Controller
                 return redirect()->route('student.search')->with('warning', $message);  
             } 
             if ($signTime > $lateSignInAfternoon){
-                $attendance->m_in = 2;
+                $attendance->af_in = 2;
                 $late = true;
             }
             else {
@@ -140,7 +140,7 @@ class AttendanceController extends Controller
                 return redirect()->route('student.search')->with('warning', $message);  
             } 
             if ($signTime > $lateSignOutAfternon){
-                $attendance->m_in = 2;
+                $attendance->af_out = 2;
                 $late = true;
             }
             else {
