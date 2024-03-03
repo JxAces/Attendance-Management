@@ -189,40 +189,21 @@ class EventsController extends Controller
     }    
     
     protected function updateAttendanceShift($day, $shiftField, $timeField)
-{
-    $ECMembers = ECMember::all();
-    $students = Student::all();
-
-    if ($day->$timeField !== null) {
-        $attendances = Attendance::where('day_id', $day->id)->get(); 
-        foreach ($attendances as $attendance) {
-            $student = $students->where('id', $attendance->student_id)->first();
-            
-            if ($student) {
-                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
-                    $attendance->$shiftField = 6;
-                } else {
-                    $attendance->$shiftField = 5;
+    {
+        if ($day->$timeField !== null) {
+            $attendances = Attendance::where('day_id', $day->id)->get(); 
+            foreach($attendances as $attendance)
+            {
+                if($attendance->$shiftField->value != 1 && $attendance->$shiftField->value != 2 && $attendance->$shiftField->value != 6)
+                {
+                  $attendance->$shiftField = 5;
+                  $attendance->save();
                 }
-                $attendance->save();
             }
+        } else {
+            Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
         }
-    } else {
-        $attendances = Attendance::where('day_id', $day->id)->get();
-        foreach ($attendances as $attendance) {
-            $student = $students->where('id', $attendance->student_id)->first();
-            
-            if ($student) {
-                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
-                    $attendance->$shiftField = 6;
-                } else {
-                    $attendance->$shiftField = 0;
-                }
-                $attendance->save();
-            }
-        } 
     }
-}
 
     
     
