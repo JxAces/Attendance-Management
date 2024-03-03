@@ -96,7 +96,7 @@ class AttendanceController extends Controller
         $lateSignInAfternoon = (clone $signInAfternoon)->modify('+1 hour');
         $signOutAfternoon = new DateTime($day->sign_out_afternoon);
         $endsignOutAfternoon = (clone $signOutAfternoon)->modify('+1 hour 30 minutes');
-        $lateSignOutAfternon = (clone $signInMorning)->modify('+1 hour');
+        $lateSignOutAfternon = (clone $signOutAfternoon)->modify('+1 hour');
         $signTime = new DateTime($requestData['sign_time']);
         
         $message = "Already Signed In: " . $student->id_no;

@@ -54,40 +54,27 @@ class UpdateAttendanceShiftJob implements ShouldQueue
     
         foreach($days as $day)
         {
-            foreach($timeFields as $timeField)
-            {
-                if ($day->{$timeField} !== null) {
-                    $attendances = Attendance::where('day_id', $day->id)->get();
-                    foreach ($attendances as $attendance) {
-                        $student = $students->where('id', $attendance->student_id)->first();
+                foreach($timeFields as $timeField)
+                {
+                    if ($day->{$timeField} !== null) {
+                        $attendances = Attendance::where('day_id', $day->id)->get();
+                        foreach ($attendances as $attendance) {
                         foreach($shiftFields as $shiftField){
-                            if ($student) {
-                                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
-                                    $attendance->{$shiftField} = 6;
-                                } else {
-                                    $attendance->{$shiftField} = 5;
-                                }
-                                $attendance->save();
-                            }
-                        }
-                    }
-                } else {
-                    $attendances = Attendance::where('day_id', $day->id)->get();
-                    foreach ($attendances as $attendance) {
                         $student = $students->where('id', $attendance->student_id)->first();
-                        foreach($shiftFields as $shiftField){
-                            if ($student) {
-                                if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
-                                    $attendance->{$shiftField} = 6;
-                                } else {
-                                    $attendance->{$shiftField} = 0;
-                                }
-                                $attendance->save();
-                            }
+                    if ($student) {
+                        if ($ECMembers->where('id_no', $student->id_no)->isNotEmpty()) {
+                            $attendance->{$shiftField} = 6;
+                        } elseif ($attendance->{$shiftField}->value != 1 && $attendance->{$shiftField}->value != 2 && $attendance->{$shiftField}->value != 6) {
+                            $attendance->{$shiftField} = 5;
                         }
+                        $attendance->save();
                     }
                 }
-            }
+                 }
+                    } else {
+                        Attendance::where('day_id', $day->id)->update([$shiftField => 0]);
+                    }
+                }
         }
     }
 }
