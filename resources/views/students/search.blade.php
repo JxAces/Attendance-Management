@@ -327,20 +327,34 @@
                         const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
                         if (isLate) {
                             eventDetails += " || Late";
-                            console.log("It's late for morning sign-out!");
                         }
                     } else if (isWithinHourAfter(currentHours, currentMinutes, signOutMorning)) {
                         eventDetails += "Morning Sign Out";
                         isSignIn = false;
                         isSignOut = true;
+
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        if (isLate) {
+                            eventDetails += " || Late";
+                        }
                     } else if (isWithinHourAfter(currentHours, currentMinutes, signInAfternoon)) {
                         eventDetails += "Afternoon Sign In";
                         isSignIn = true;
                         isSignOut = false;
+
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        if (isLate) {
+                            eventDetails += " || Late";
+                        }
                     } else if (isWithinHourAfter(currentHours, currentMinutes, signOutAfternoon)) {
                         eventDetails += "Afternoon Sign Out";
                         isSignIn = false;
                         isSignOut = true;
+
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        if (isLate) {
+                            eventDetails += " || Late";
+                        }
                     } else {
                         eventDetails += "No Event";
                         isSignIn = false;

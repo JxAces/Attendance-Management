@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<div class="card mt-4 mx-7">
+<!-- <div class="card mt-4 mx-7">
   <div class="card-header bg-successs text-white">
     <h3><i class="fa fa-cloud-upload" style="font-size: 25px;"></i> Import EC Officers</h3>
   </div>
@@ -35,7 +35,7 @@
       <button onclick="showECOfficerConfirmation(event)">Import EC Officers</button>
     </form>
   </div>
-</div>
+</div> -->
 
 @endsection
 
