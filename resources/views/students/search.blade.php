@@ -333,7 +333,7 @@
                         isSignIn = false;
                         isSignOut = true;
 
-                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signOutMorning);
                         if (isLate) {
                             eventDetails += " || Late";
                         }
@@ -342,7 +342,7 @@
                         isSignIn = true;
                         isSignOut = false;
 
-                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signInAfternoon);
                         if (isLate) {
                             eventDetails += " || Late";
                         }
@@ -351,7 +351,7 @@
                         isSignIn = false;
                         isSignOut = true;
 
-                        const isLate = isLateForEvent(currentHours, currentMinutes, signInMorning);
+                        const isLate = isLateForEvent(currentHours, currentMinutes, signOutAfternoon);
                         if (isLate) {
                             eventDetails += " || Late";
                         }
