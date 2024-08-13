@@ -16,7 +16,7 @@
             </select>
         </div>
         <div class="d-flex mt-3 ms-35">
-        <button id="openModalButton" class="btn btn-primary me-4">New Student</button>
+        <button id="openModalButton" class="btn btn-primary me-4" style="visibility: hidden">New Student</button>
         <button id="signInButton1" type="button" class="btn btn-primary ml-2" disabled>Sign In Student</button>
     </div>
     </div>
