@@ -59,14 +59,14 @@ class StudentController extends Controller
     {
         // Validate the input
         $request->validate([
-            'studentName' => 'required|string|max:255',
+            'id_no' => 'required|string|max:255',
         ]);
 
         // Save the student
         $student = new Student();
-        $student->full_name = 'New Student';
-        $student->year_level = '1';
-        $student->major = 'N/A';
+        $student->full_name = $request->input('studentName');
+        $student->year_level = $request->input('year_level');
+        $student->major = $request->input('major');
         $student->department_program = 'N/A';
         $student->gender = 'N/A';
         $student->registration_date = '2023-08-22';
@@ -74,7 +74,7 @@ class StudentController extends Controller
         $student->address = 'N/A';
         $student->gpa = 0;
         $student->total_units = 0;
-        $student->id_no = $request->input('studentName');
+        $student->id_no = $request->input('id_no');
         $student->save();
 
         $events = Event::get();
@@ -124,7 +124,7 @@ class StudentController extends Controller
         $requestData = $request->all();
 
         $event = Event::where('name', $requestData['event_name_new'])->first();
-        $student = Student::where('id_no', $requestData['studentName'])->first();
+        $student = Student::where('id_no', $requestData['id_no'])->first();
         $dayNumber = intval($requestData['day_number_new']);
         $day = Day::where('event_id', $event->id)
                     ->where('day_number', $dayNumber)

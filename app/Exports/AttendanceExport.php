@@ -51,6 +51,10 @@ class AttendanceExport implements FromCollection, WithHeadings
         }
         
         $attendances = $query->with(['day.event', 'student'])
+        ->orderBy('attendances.m_in', 'asc')
+        ->orderBy('attendances.m_out', 'asc')
+        ->orderBy('attendances.af_in', 'asc')
+        ->orderBy('attendances.af_out', 'asc')
             ->orderBy('updated_at', 'desc')
             ->get();        
 

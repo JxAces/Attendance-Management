@@ -14,9 +14,9 @@
             <select id="studentSelect" class="form-control border-0 ">
                 <option value="" class="option"disabled selected>Enter Student ID</option>
             </select>
-        </div>
+        </div>  
         <div class="d-flex mt-3 ms-35">
-        <button id="openModalButton" class="btn btn-primary me-4" style="visibility: hidden">New Student</button>
+        <button id="openModalButton" class="btn btn-primary me-4">New Student</button>
         <button id="signInButton1" type="button" class="btn btn-primary ml-2" disabled>Sign In Student</button>
     </div>
     </div>
@@ -33,8 +33,14 @@
                 <form id="addStudentForm" action="{{ route('save_student') }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="studentName">Student ID No</label>
+                        <label for="id_no">Student ID No</label>
+                        <input type="text" class="form-control" id="id_no" name="id_no" required>
+                        <label for="studentName">Fullname</label>
                         <input type="text" class="form-control" id="studentName" name="studentName" required>
+                        <label for="year_level">Year Level</label>
+                        <input type="text" class="form-control" id="year_level" name="year_level" required>
+                        <label for="major">Major</label>
+                        <input type="text" class="form-control" id="major" name="major" required>
                         <input type="text" name="event_name_new" placeholder="Event Name" required hidden>
                         <input type="text" name="day_number_new" placeholder="Day Number" required hidden>
                         <input type="text" name="sign_time_new" placeholder="Sign Time" required hidden>
