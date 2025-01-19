@@ -23,7 +23,13 @@ class AttendanceController extends Controller
             ->join('days', 'attendances.day_id', '=', 'days.id')
             ->orderBy('students.year_level', 'asc')
             ->orderBy('days.day_number', 'asc')
+            ->orderBy('attendances.m_in', 'asc')
+            ->orderBy('attendances.m_out', 'asc')
+            ->orderBy('attendances.af_in', 'asc')
+            ->orderBy('attendances.af_out', 'asc')
             ->get();
+
+        // $attendances = Attendance::with(['day', 'student', 'day.event'])->get();
     
         $events = Event::all();
     
@@ -259,7 +265,9 @@ class AttendanceController extends Controller
         ";
     
         $result = DB::select($query, [$eventId, $dayId]);
+        Log::info($result);
         return $result;
+        
     }
     
     
