@@ -15507,7 +15507,7 @@ textarea.form-control-lg {
 }
 
 .alert-info {
-  background-image: linear-gradient(310deg, #2152ff 0%, #02c6f3 100%);
+  background-image: linear-gradient(310deg, #02c6f3 0%, #02c6f3 100%);
 }
 
 .alert-warning {
