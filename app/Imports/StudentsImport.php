@@ -63,9 +63,10 @@ class StudentsImport implements ToModel, WithHeadingRow
         $gpa = isset($row['gpa']) ? $row['gpa'] : null;
         $totalUnits = isset($row['total_units']) ? $row['total_units'] : null;
 
-        $student = Student::where('id_no', $idNo)->where('dept_no', $deptID)->first();
+        $student = Student::where('id_no', $idNo)->first();
 
         if($student != null){
+            $student->full_name = $fullName;
             $student->year_level = $yearLevel;
             $student->major = $major;
             $student->department_program = $departmentProgram;

@@ -62,6 +62,14 @@ class StudentController extends Controller
             'id_no' => 'required|string|max:255',
         ]);
 
+        // Check if a student with the same id_no already exists
+        $existingStudent = Student::where('id_no', $request->input('id_no'))->first();
+
+        if ($existingStudent) {
+            // Redirect back with a warning message if the student already exists
+            return redirect()->back()->with('warning', 'A student with this ID number already exists in the database.');
+        }
+
         // Save the student
         $student = new Student();
         $student->full_name = $request->input('studentName');
