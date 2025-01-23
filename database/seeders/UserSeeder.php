@@ -34,17 +34,17 @@ class UserSeeder extends Seeder
         ]);
         DB::table('users')->insert([
             'id' => 3,
-            'name' => 'it',
-            'email' => 'bsit@ccs',
-            'password' => Hash::make('user'),
+            'name' => 'cass',
+            'email' => 'cass@iit',
+            'password' => Hash::make('cass'),
             'created_at' => now(),
             'updated_at' => now()
         ]);
         DB::table('users')->insert([
             'id' => 4,
-            'name' => 'is',
-            'email' => 'bsis@ccs',
-            'password' => Hash::make('user'),
+            'name' => 'ced',
+            'email' => 'ced@iit',
+            'password' => Hash::make('ced'),
             'created_at' => now(),
             'updated_at' => now()
         ]);
