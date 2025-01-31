@@ -42,7 +42,7 @@ class StudentEmail extends Mailable
     /**
      * Generate email address based on the student's full name.
      */
-    public function generateEmail(): string
+    public function generateEmail(): string 
     {
         // Split full name into components (Assumes "Last, First Middle")
         [$lastName, $rest] = explode(',', $this->student->full_name);

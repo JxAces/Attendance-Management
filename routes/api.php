@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/send-bulk-emails', [EmailController::class, 'sendStudentEmails']);
+Route::post('/send-email', [EmailController::class, 'sendSingleEmail'])->name('send_qr');

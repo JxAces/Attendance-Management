@@ -28,6 +28,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+                <button type="button" class="btn btn-secondary" id="sendQR" data-toggle="modal" data-target="#qrCodeModal">Send QR</button>
             </div>
             <div class="modal-body">
                 <form id="addStudentForm" action="{{ route('save_student') }}" method="POST">
@@ -50,6 +51,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="submitStudentButton">Save Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="qrCodeModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrCodeModalLabel">Enter Student ID for QR</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form id="qrCodeForm" action="{{ route('send_qr') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="qr_id_no">Student ID No</label>
+                    <input type="text" class="form-control" id="id_no" name="student_ids" required>
+                </div>
+                <button type="button" class="btn btn-primary" id="submitbutton">Generate QR</button>
+            </form>
             </div>
         </div>
     </div>
@@ -152,6 +176,15 @@
                     },
                 });
             },
+        });
+
+
+        $('#sendQR').on('click', function () {
+            $('#qrCodeModal').modal('show'); // Open the modal
+        });
+
+        $('#submitbutton').on('click', function () {
+            $('#qrCodeForm').submit(); // Properly submit the form
         });
 
         $('#openModalButton').on('click', function () {

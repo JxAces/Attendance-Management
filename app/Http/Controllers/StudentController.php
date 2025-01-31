@@ -85,6 +85,10 @@ class StudentController extends Controller
         $student->id_no = $request->input('id_no');
         $student->save();
 
+        $requestData = new Request(['student_ids' => $student->id_no]);
+        (new EmailController())->sendSingleEmail($requestData);
+
+
         $events = Event::get();
         if($events != null){
             foreach($events as $event){
