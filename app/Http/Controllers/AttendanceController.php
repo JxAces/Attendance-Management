@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Exports\AttendanceExport;
 use App\Models\Attendance;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Event;
 use App\Models\Day;
 use App\Models\Student;
@@ -18,9 +19,14 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        $userCollege = Auth::user()->college;
+
         $attendances = Attendance::with(['day.event', 'student'])
             ->join('students', 'attendances.student_id', '=', 'students.id')
             ->join('days', 'attendances.day_id', '=', 'days.id')
+            ->when($userCollege, function ($query, $userCollege) {
+                return $query->where('students.college', $userCollege);
+            })
             ->orderBy('students.year_level', 'asc')
             ->orderBy('days.day_number', 'asc')
             ->orderBy('attendances.m_in', 'asc')
@@ -29,14 +35,12 @@ class AttendanceController extends Controller
             ->orderBy('attendances.af_out', 'asc')
             ->get();
 
-        // $attendances = Attendance::with(['day', 'student', 'day.event'])->get();
-    
         $events = Event::all();
-    
+
         if ($request->ajax()) {
             return response()->json(['attendances' => $attendances]);
         }
-    
+
         return view('attendances.index', compact('attendances', 'events'));
     }
     

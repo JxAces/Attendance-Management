@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Student; 
 use App\Models\Day; 
 use App\Models\Event; 
@@ -26,16 +27,31 @@ class StudentController extends Controller
 
     public function showSearchPage()
     {
+
+        $college = auth()->user()->college;
+        $majors = Student::where('college', $college)
+                        ->distinct()
+                        ->pluck('major', 'major');
         $days = Day::all();
         $events = Event::all();
-        return view('students.search', compact('days','events'));
+        return view('students.search', compact('days','events', 'majors'));
     }
 
     public function search(Request $request)
     {
         try {
             $searchTerm = $request->input('q');
-            $students = Student::where('id_no', 'like', '%' . $searchTerm . '%')->get();
+            $userCollege = Auth::user()->college;
+    
+            $students = Student::when($userCollege, function ($query, $userCollege) {
+                return $query->where('college', $userCollege);
+            })
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('id_no', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('full_name', 'like', '%' . $searchTerm . '%');
+            })
+            ->get();
+    
             return response()->json($students);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
@@ -43,17 +59,26 @@ class StudentController extends Controller
         }
     }
     
+    
     // Add a new method in StudentController.php
     public function getStudentDetails($id_no)
     {
         try {
-            $student = Student::where('id_no', $id_no)->firstOrFail();
+            $userCollege = Auth::user()->college;
+    
+            $student = Student::when($userCollege, function ($query, $userCollege) {
+                return $query->where('college', $userCollege);
+            })
+            ->where('id_no', $id_no)
+            ->firstOrFail();
+    
             return response()->json($student);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
             return response()->json(['error' => 'Student details not found.'], 404);
         }
     }
+    
 
     public function saveStudent(Request $request)
     {
@@ -83,6 +108,7 @@ class StudentController extends Controller
         $student->gpa = 0;
         $student->total_units = 0;
         $student->id_no = $request->input('id_no');
+        $student->college = $request->input('college');
         $student->save();
 
         $events = Event::get();
