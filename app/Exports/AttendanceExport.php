@@ -6,6 +6,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class AttendanceExport implements FromCollection, WithHeadings
 {
@@ -18,46 +20,55 @@ class AttendanceExport implements FromCollection, WithHeadings
 
     public function collection()
     {
+        $userCollege = Auth::user()->college;
+    
         $query = Attendance::query();
-
+    
+        // Filter by college if not null
+        if ($userCollege) {
+            $query->whereHas('student', function ($query) use ($userCollege) {
+                $query->where('college', $userCollege);
+            });
+        }
+    
         if ($this->request->filled('event_id')) {
             $query->whereHas('day.event', function ($query) {
                 $query->where('id', $this->request->input('event_id'));
             });
         }
-        
+    
         if ($this->request->filled('day_number')) {
             $query->whereHas('day', function ($query) {
                 $query->where('day_number', $this->request->input('day_number'));
             });
         }
-        
+    
         if ($this->request->filled('search')) {
             $query->whereHas('student', function ($query) {
                 $query->where('id_no', $this->request->input('search'));
             });
         }
-        
+    
         if ($this->request->filled('year_level')) {
             $query->whereHas('student', function ($query) {
                 $query->where('year_level', $this->request->input('year_level'));
             });
         }
-        
+    
         if ($this->request->filled('major')) {
             $query->whereHas('student', function ($query) {
                 $query->where('major', $this->request->input('major'));
             });
         }
-        
+    
         $attendances = $query->with(['day.event', 'student'])
-        ->orderBy('attendances.m_in', 'asc')
-        ->orderBy('attendances.m_out', 'asc')
-        ->orderBy('attendances.af_in', 'asc')
-        ->orderBy('attendances.af_out', 'asc')
+            ->orderBy('attendances.m_in', 'asc')
+            ->orderBy('attendances.m_out', 'asc')
+            ->orderBy('attendances.af_in', 'asc')
+            ->orderBy('attendances.af_out', 'asc')
             ->orderBy('updated_at', 'desc')
-            ->get();        
-
+            ->get();
+    
         // Transform raw data into desired format
         $formattedData = [];
         foreach ($attendances as $attendance) {
@@ -72,12 +83,12 @@ class AttendanceExport implements FromCollection, WithHeadings
                 $attendance->m_out->name,
                 $attendance->af_in->name,
                 $attendance->af_out->name,
-                // Add more data fields as needed
             ];
         }
-
+    
         return collect($formattedData);
     }
+    
 
     public function headings(): array
     {
