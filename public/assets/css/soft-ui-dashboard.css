@@ -15507,7 +15507,7 @@ textarea.form-control-lg {
 }
 
 .alert-info {
-  background-image: linear-gradient(310deg, #2152ff 0%, #02c6f3 100%);
+  background-image: linear-gradient(310deg, #02c6f3 0%, #02c6f3 100%);
 }
 
 .alert-warning {
@@ -18019,17 +18019,28 @@ hr.horizontal.gray-light {
 }
 
 @media (max-width: 1199.98px) {
-  .g-sidenav-show.rtl .sidenav {
-    transform: translateX(17.125rem);
+  .sidenav {
+    visibility: hidden;
+    display: none;
   }
-  .g-sidenav-show:not(.rtl) .sidenav {
-    transform: translateX(-17.125rem);
+  .selectize-control.single .selectize-input {
+    border: 1px solid #d0d0d0 !important;
+    padding: 10px 105px !important;
+    display: flex !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    z-index: 1 !important;
+    box-sizing: border-box !important;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .1);
+    border-radius: 3px !important;
+    border-color: #000;
   }
-  .g-sidenav-show .sidenav.fixed-start + .main-content {
-    margin-left: 0 !important;
-  }
-  .g-sidenav-show.g-sidenav-pinned .sidenav {
-    transform: translateX(0);
+  .d-flex.mt-3.ms-35{
+    margin-left: 0rem !important;
+    margin-top: 1rem !important;
+    display: flex !important;
+    margin-bottom: 20;
   }
 }
 .navbar-vertical.bg-white {

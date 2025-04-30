@@ -45,6 +45,23 @@ return [
             'auth_mode' => null,
         ],
 
+        'gmail1' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => env('GMAIL1_USERNAME'),
+            'password' => env('GMAIL1_PASSWORD'),
+        ],
+        'gmail2' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => env('GMAIL2_USERNAME'),
+            'password' => env('GMAIL2_PASSWORD'),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],

@@ -17,6 +17,7 @@ class CreateStudentsTable extends Migration
             $table->string('major');
             $table->string('department_program');
             $table->string('gender');
+            $table->string('college');
             $table->date('registration_date');
             $table->string('scholarship_status');
             $table->string('address');

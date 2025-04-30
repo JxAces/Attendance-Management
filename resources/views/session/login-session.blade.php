@@ -155,6 +155,14 @@
     .form-field {
         margin-bottom: 15px;
     }
+    @media (max-width: 1199.98px){
+        .circle-column {
+            display: none;
+        }
+        .sign-in-btn {
+            padding: 10px 153px !important;
+        }
+    }
 
     .form-check.form-switch {
         display: flex;
@@ -166,7 +174,7 @@
         background-color: #2B738B !important;
         color: white !important;
         border: none !important;
-        padding: 10px 195px !important;
+        padding: 10px 195px;
         border-radius: 5px !important;
         cursor: pointer !important;
         font-size: 13.3333px;

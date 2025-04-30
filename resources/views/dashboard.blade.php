@@ -152,40 +152,40 @@
 
 
 
-    // var ctxBarMIn = document.getElementById('barChartMIn').getContext('2d');
-    // var barChartMIn = new Chart(ctxBarMIn, {
-    //     type: 'bar',
-    //     data: {
-    //         labels: @json($mInLabels),
-    //         datasets: [{
-    //             label: 'Sign in Morning',
-    //             data: @json($dataForMIn),
-    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
-    //             borderColor: 'rgba(75, 192, 192, 1)',
-    //             borderWidth: 1
-    //         }]
-    //     },
-    //     options: {
-    //         // Add any options you need for your chart
-    //     }
-    // });
+    var ctxBarMIn = document.getElementById('barChartMIn').getContext('2d');
+    var barChartMIn = new Chart(ctxBarMIn, {
+        type: 'bar',
+        data: {
+            labels: @json($mInLabels),
+            datasets: [{
+                label: 'Sign in Morning',
+                data: @json($dataForMIn),
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            // Add any options you need for your chart
+        }
+    });
 
-    // var ctxBarAfOut = document.getElementById('barChartAfOut').getContext('2d');
-    // var barChartAfOut = new Chart(ctxBarAfOut, {
-    //     type: 'bar',
-    //     data: {
-    //         labels: @json($afOutLabels),
-    //         datasets: [{
-    //             label: 'Sign out Afternoon',
-    //             data: @json($dataForAfOut),
-    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
-    //             borderColor: 'rgba(75, 192, 192, 1)',
-    //             borderWidth: 1
-    //         }]
-    //     },
-    //     options: {
-    //         // Add any options you need for your chart
-    //     }
-    // });
+    var ctxBarAfOut = document.getElementById('barChartAfOut').getContext('2d');
+    var barChartAfOut = new Chart(ctxBarAfOut, {
+        type: 'bar',
+        data: {
+            labels: @json($afOutLabels),
+            datasets: [{
+                label: 'Sign out Afternoon',
+                data: @json($dataForAfOut),
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            // Add any options you need for your chart
+        }
+    });
 </script>
 @endpush

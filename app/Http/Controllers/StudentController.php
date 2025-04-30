@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Student; 
 use App\Models\Day; 
 use App\Models\Event; 
@@ -26,16 +27,31 @@ class StudentController extends Controller
 
     public function showSearchPage()
     {
+
+        $college = auth()->user()->college;
+        $majors = Student::where('college', $college)
+                        ->distinct()
+                        ->pluck('major', 'major');
         $days = Day::all();
         $events = Event::all();
-        return view('students.search', compact('days','events'));
+        return view('students.search', compact('days','events', 'majors'));
     }
 
     public function search(Request $request)
     {
         try {
             $searchTerm = $request->input('q');
-            $students = Student::where('id_no', 'like', '%' . $searchTerm . '%')->get();
+            $userCollege = Auth::user()->college;
+    
+            $students = Student::when($userCollege, function ($query, $userCollege) {
+                return $query->where('college', $userCollege);
+            })
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('id_no', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('full_name', 'like', '%' . $searchTerm . '%');
+            })
+            ->get();
+    
             return response()->json($students);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
@@ -43,30 +59,47 @@ class StudentController extends Controller
         }
     }
     
+    
     // Add a new method in StudentController.php
     public function getStudentDetails($id_no)
     {
         try {
-            $student = Student::where('id_no', $id_no)->firstOrFail();
+            $userCollege = Auth::user()->college;
+    
+            $student = Student::when($userCollege, function ($query, $userCollege) {
+                return $query->where('college', $userCollege);
+            })
+            ->where('id_no', $id_no)
+            ->firstOrFail();
+    
             return response()->json($student);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
             return response()->json(['error' => 'Student details not found.'], 404);
         }
     }
+    
 
     public function saveStudent(Request $request)
     {
         // Validate the input
         $request->validate([
-            'studentName' => 'required|string|max:255',
+            'id_no' => 'required|string|max:255',
         ]);
+
+        // Check if a student with the same id_no already exists
+        $existingStudent = Student::where('id_no', $request->input('id_no'))->first();
+
+        if ($existingStudent) {
+            // Redirect back with a warning message if the student already exists
+            return redirect()->back()->with('warning', 'A student with this ID number already exists in the database.');
+        }
 
         // Save the student
         $student = new Student();
-        $student->full_name = 'New Student';
-        $student->year_level = '1';
-        $student->major = 'N/A';
+        $student->full_name = $request->input('studentName');
+        $student->year_level = $request->input('year_level');
+        $student->major = $request->input('major');
         $student->department_program = 'N/A';
         $student->gender = 'N/A';
         $student->registration_date = '2023-08-22';
@@ -74,8 +107,13 @@ class StudentController extends Controller
         $student->address = 'N/A';
         $student->gpa = 0;
         $student->total_units = 0;
-        $student->id_no = $request->input('studentName');
+        $student->id_no = $request->input('id_no');
+        $student->college = $request->input('college');
         $student->save();
+
+        $requestData = new Request(['student_ids' => $student->id_no]);
+        (new EmailController())->sendSingleEmail($requestData);
+
 
         $events = Event::get();
         if($events != null){
@@ -124,7 +162,7 @@ class StudentController extends Controller
         $requestData = $request->all();
 
         $event = Event::where('name', $requestData['event_name_new'])->first();
-        $student = Student::where('id_no', $requestData['studentName'])->first();
+        $student = Student::where('id_no', $requestData['id_no'])->first();
         $dayNumber = intval($requestData['day_number_new']);
         $day = Day::where('event_id', $event->id)
                     ->where('day_number', $dayNumber)

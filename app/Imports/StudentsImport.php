@@ -62,10 +62,12 @@ class StudentsImport implements ToModel, WithHeadingRow
         $address = isset($row['address']) ? $row['address'] : null;
         $gpa = isset($row['gpa']) ? $row['gpa'] : null;
         $totalUnits = isset($row['total_units']) ? $row['total_units'] : null;
+        $college = isset($row['college']) ? $row['college'] : null; 
 
-        $student = Student::where('id_no', $idNo)->where('dept_no', $deptID)->first();
+        $student = Student::where('id_no', $idNo)->first();
 
         if($student != null){
+            $student->full_name = $fullName;
             $student->year_level = $yearLevel;
             $student->major = $major;
             $student->department_program = $departmentProgram;
@@ -75,6 +77,7 @@ class StudentsImport implements ToModel, WithHeadingRow
             $student->address = $address;
             $student->gpa = $gpa;
             $student->total_units = $totalUnits;
+            $student->college = $college;
             $student->save();
         } else {
             $newStudent = new Student([
@@ -90,6 +93,7 @@ class StudentsImport implements ToModel, WithHeadingRow
                 'address' => $address,
                 'gpa' => $gpa,
                 'total_units' => $totalUnits,
+                'college' => $college,
             ]);
 
             $newStudent->save();    
